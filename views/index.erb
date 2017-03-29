@@ -1,0 +1,31 @@
+<div id="title">
+    <h1>Setup Recovery</h1>
+</div>
+<div class="section">
+    <div class="bodyText">
+        <p>
+            To keep this example application simple, we won't actually create and manage accounts.
+            In fact, this entire application is stateless on the server side. The phrase you see
+            below is not saved anywhere unless you stash it at another account you control. We will
+            encrypt the phrase so that it can't be viewed by that site; only this application can
+            decrypt it again later.  This phrase isn't part of the protocol, the data you store as
+            part of your recovery token could be anything - most likely it would be a user id or
+            a crypto key in a real application.
+        </p>
+
+        <p>
+            Here is your random phrase:
+        </p>
+    </div>
+
+    <form action="/account-provider/create" method="post">
+        <%= Rack::Csrf.csrf_tag(env) %>
+        <div class="bodyText">To save your phrase for recovery, choose a provider where you have an account:</div>
+
+        <div class="formInput topMargin">
+            <input type="text" name="recovery_provider" value="http://localhost:9292">
+            <input type="text" name="phrase" value="<%= SecureRandom.hex(4) %>">
+            <button type="submit" value="connect to http://localhost:9292">connect to http://localhost:9292</button>
+        </div>
+    </form>
+</div>

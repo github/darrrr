@@ -1,0 +1,13 @@
+coverage
+.bundle/
+.env
+log/*.log
+pkg/
+test/dummy/db/*.sqlite3
+test/dummy/db/*.sqlite3-journal
+test/dummy/log/*.log
+test/dummy/tmp/
+*.pem
+*.gem
+aes_key
+cookie_secret

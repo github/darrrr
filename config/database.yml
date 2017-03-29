@@ -1,0 +1,22 @@
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: delegated_account_recovery
+  pool: 2
+  host: localhost
+  password:
+
+test:
+  adapter: postgresql
+  encoding: unicode
+  database: delegated_account_recovery_test
+  pool: 2
+  host: localhost
+  password:
+
+
+production:
+  database: delegated_account_recovery_production
+  adapter: postgresql
+  host: localhost
+  password:

@@ -1,0 +1,11 @@
+<p>Token: <%= Base64.encode64(token.to_binary_s) %></p>
+<pre>
+  <%= token.token_object.to_s.split(", :").join("\n") %>
+</pre>
+
+<form name="recoveryAutoPostForm" method="post" action="<%= endpoint %>">
+  <%= Rack::Csrf.csrf_tag(env)  %>
+  <input type="hidden" name="token" value="<%= payload %>">
+  <input type="hidden" name="state" value="<%= state %>">
+  <input type="submit" value="Setup recovery">
+</form>

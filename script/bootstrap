@@ -1,0 +1,5 @@
+#!/bin/bash
+set -e
+
+brew install phantomjs
+bundle install -j 16

@@ -1,0 +1,276 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://example-provider.org/.well-known/delegated-account-recovery/configuration
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - Basic Z2l0aHViOjJiMTc1N2VlYjk3ZjFiNDEwOWYxN2Y2NDQxZmU3NTEy
+      User-Agent:
+      - Faraday v0.9.2
+  response:
+    status:
+      code: 200
+      message:
+    headers:
+      strict-transport-security:
+      - max-age=15552000; preload
+      cache-control:
+      - private, no-cache, no-store, must-revalidate
+      expires:
+      - Sat, 01 Jan 2000 00:00:00 GMT
+      access-control-allow-credentials:
+      - 'true'
+      x-frame-options:
+      - DENY
+      pragma:
+      - no-cache
+      vary:
+      - Origin, Accept-Encoding
+      access-control-allow-origin:
+      - https://example-provider.org
+      access-control-expose-headers:
+      - X-FB-Debug, X-Loader-Length
+      public-key-pins-report-only:
+      - max-age=500; pin-sha256="WoiWRyIOVNa9ihaBciRSC7XHjliYS9VwUGOIud4PB18="; pin-sha256="r/mIkG3eEpVdm+u/ko/cwxzOMo1bk4TyHIlByibiA5E=";
+        pin-sha256="q4PO2G2cbkZhZ82+JgmRUyGMoAeozA+BSXVXQWB8XWQ="; report-uri="http://reports.fb.com/hpkp/"
+      access-control-allow-method:
+      - OPTIONS
+      x-xss-protection:
+      - '0'
+      content-type:
+      - application/json
+      x-content-type-options:
+      - nosniff
+      x-fb-debug:
+      - 61gb9jmK8oPlTCKG1ICl2hC9r/SmSK2lN5VjLwPhFzhcVPZ9NRhNQwiFwOAMGCCkn8TdJOLhkbgrH44sRQecsQ==
+      date:
+      - Fri, 28 Oct 2016 00:03:57 GMT
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+           "issuer": "https://example-provider.org",
+           "countersign-pubkeys-secp256r1": [
+              "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEt8Q2mx9vXutOdCPlPP0J9qrJs/7aULPCXNyWfwOvt6k9vb2DIVqD3f7HlYOjZTt1xyUVAicfXbiuPA7sp/iaBA=="
+           ],
+           "tokensign-pubkeys-secp256r1": [
+              "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE+LQRJeAXDpYknpWVn4lEKq0Q1ydH8c7GRcSmOzyLUvOXAxdl11spiqxuw13mHknoTRW0EutMo2gn9ID+uB0WpQ=="
+           ],
+           "token-max-size": 8192,
+           "save-token": "https://example-provider.org/recovery/delegated/save",
+           "save-token-return": "https://example-provider.org/recovery/delegated/save-token-return",
+           "recover-account": "https://example-provider.org/recovery/delegated/recover",
+           "recover-account-return": "https://example-provider.org/recovery/delegated/recover-account-return",
+           "save-token-async-api-iframe": "https://example-provider.org/plugins/delegated_account_recovery",
+           "privacy-policy": "https://example-provider.org/about/privacy/",
+           "icon-152px": "https://example-provider.org/logo"
+        }
+    http_version:
+  recorded_at: Fri, 28 Oct 2016 00:03:57 GMT
+- request:
+    method: get
+    uri: http://localhost:9292/.well-known/delegated-account-recovery/configuration
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - Basic Z2l0aHViOjJiMTc1N2VlYjk3ZjFiNDEwOWYxN2Y2NDQxZmU3NTEy
+      User-Agent:
+      - Faraday v0.9.2
+  response:
+    status:
+      code: 200
+      message:
+    headers:
+      strict-transport-security:
+      - max-age=15552000; preload
+      cache-control:
+      - private, no-cache, no-store, must-revalidate
+      expires:
+      - Sat, 01 Jan 2000 00:00:00 GMT
+      access-control-allow-credentials:
+      - 'true'
+      x-frame-options:
+      - DENY
+      pragma:
+      - no-cache
+      vary:
+      - Origin, Accept-Encoding
+      access-control-allow-origin:
+      - http://localhost:9292
+      access-control-expose-headers:
+      - X-FB-Debug, X-Loader-Length
+      public-key-pins-report-only:
+      - max-age=500; pin-sha256="WoiWRyIOVNa9ihaBciRSC7XHjliYS9VwUGOIud4PB18="; pin-sha256="r/mIkG3eEpVdm+u/ko/cwxzOMo1bk4TyHIlByibiA5E=";
+        pin-sha256="q4PO2G2cbkZhZ82+JgmRUyGMoAeozA+BSXVXQWB8XWQ="; report-uri="http://reports.fb.com/hpkp/"
+      access-control-allow-method:
+      - OPTIONS
+      x-xss-protection:
+      - '0'
+      content-type:
+      - application/json
+      x-content-type-options:
+      - nosniff
+      x-fb-debug:
+      - 61gb9jmK8oPlTCKG1ICl2hC9r/SmSK2lN5VjLwPhFzhcVPZ9NRhNQwiFwOAMGCCkn8TdJOLhkbgrH44sRQecsQ==
+      date:
+      - Fri, 28 Oct 2016 00:03:57 GMT
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+           "issuer": "http://localhost:9292",
+           "countersign-pubkeys-secp256r1": [
+              "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEcUoYO9viRDXApcOgjVWlA2e4GTwJV4DzysupSswayKGhZsZMeL2Tlsc4fKkTTyfdRWZ4C1ShO1XQWiowaa1q8w=="
+           ],
+           "tokensign-pubkeys-secp256r1": [
+             "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEks3CjRTWrTnEDEiz36ICsy3mOX7fhauJ3Jj3R6hN7rp0Q6zh3WKIhGMBR8Ccc1VKZ4eMqLmw/WQLHSAn22GD4g=="
+           ],
+           "token-max-size": 8192,
+           "save-token": "http://localhost:9292/settings/security/recovery-provider/save-token",
+           "save-token-return": "http://localhost:9292/settings/security/delegated-account-recovery/save-token-return",
+           "recover-account": "http://localhost:9292/settings/security/recovery-provider/recover-account",
+           "recover-account-return": "http://localhost:9292/settings/security/delegated-account-recovery/recover-account-return",
+           "save-token-async-api-iframe": "http://localhost:9292/plugins/delegated_account_recovery",
+           "privacy-policy": "http://localhost:9292/about/privacy/",
+           "icon-152px": "http://localhost:9292/images/modules/logos_page/GitHub-Mark.png"
+        }
+    http_version:
+  recorded_at: Fri, 28 Oct 2016 00:03:57 GMT
+- request:
+    method: get
+    uri: https://www.faceboooooook.com/.well-known/delegated-account-recovery/configuration
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.9.2
+  response:
+    status:
+      code: 404
+      message:
+    headers:
+      strict-transport-security:
+      - max-age=15552000; preload
+      cache-control:
+      - private, no-cache, no-store, must-revalidate
+      expires:
+      - Sat, 01 Jan 2000 00:00:00 GMT
+      access-control-allow-credentials:
+      - 'true'
+      x-frame-options:
+      - DENY
+      pragma:
+      - no-cache
+      vary:
+      - Origin, Accept-Encoding
+      access-control-allow-origin:
+      - https://example-provider.org
+      access-control-expose-headers:
+      - X-FB-Debug, X-Loader-Length
+      public-key-pins-report-only:
+      - max-age=500; pin-sha256="WoiWRyIOVNa9ihaBciRSC7XHjliYS9VwUGOIud4PB18="; pin-sha256="r/mIkG3eEpVdm+u/ko/cwxzOMo1bk4TyHIlByibiA5E=";
+        pin-sha256="q4PO2G2cbkZhZ82+JgmRUyGMoAeozA+BSXVXQWB8XWQ="; report-uri="http://reports.fb.com/hpkp/"
+      access-control-allow-method:
+      - OPTIONS
+      x-xss-protection:
+      - '0'
+      content-type:
+      - application/json
+      x-content-type-options:
+      - nosniff
+      x-fb-debug:
+      - 61gb9jmK8oPlTCKG1ICl2hC9r/SmSK2lN5VjLwPhFzhcVPZ9NRhNQwiFwOAMGCCkn8TdJOLhkbgrH44sRQecsQ==
+      date:
+      - Fri, 28 Oct 2016 00:03:57 GMT
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: ""
+    http_version:
+  recorded_at: Fri, 28 Oct 2016 00:03:57 GMT
+- request:
+    method: get
+    uri: https://bad-json.com/.well-known/delegated-account-recovery/configuration
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.9.2
+  response:
+    status:
+      code: 200
+      message:
+    headers:
+      strict-transport-security:
+      - max-age=15552000; preload
+      cache-control:
+      - private, no-cache, no-store, must-revalidate
+      expires:
+      - Sat, 01 Jan 2000 00:00:00 GMT
+      access-control-allow-credentials:
+      - 'true'
+      x-frame-options:
+      - DENY
+      pragma:
+      - no-cache
+      vary:
+      - Origin, Accept-Encoding
+      access-control-allow-origin:
+      - https://example-provider.org
+      access-control-expose-headers:
+      - X-FB-Debug, X-Loader-Length
+      public-key-pins-report-only:
+      - max-age=500; pin-sha256="WoiWRyIOVNa9ihaBciRSC7XHjliYS9VwUGOIud4PB18="; pin-sha256="r/mIkG3eEpVdm+u/ko/cwxzOMo1bk4TyHIlByibiA5E=";
+        pin-sha256="q4PO2G2cbkZhZ82+JgmRUyGMoAeozA+BSXVXQWB8XWQ="; report-uri="http://reports.fb.com/hpkp/"
+      access-control-allow-method:
+      - OPTIONS
+      x-xss-protection:
+      - '0'
+      content-type:
+      - application/json
+      x-content-type-options:
+      - nosniff
+      x-fb-debug:
+      - 61gb9jmK8oPlTCKG1ICl2hC9r/SmSK2lN5VjLwPhFzhcVPZ9NRhNQwiFwOAMGCCkn8TdJOLhkbgrH44sRQecsQ==
+      date:
+      - Fri, 28 Oct 2016 00:03:57 GMT
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+           "issuer": "https://bad-json.org",
+           "countersign-pubkeys-secp256r1": [
+              ""
+           ],
+           "token-max-size": 8192,
+           "save-token": "https://bad-json.org/recovery/delegated/save-token",
+           "recover-account": "https://bad-json.org/recovery/delegated/recover",
+           "save-token-async-api-iframe": "https://bad-json.org/plugins/delegated_account_recovery",
+           "privacy-policy": "https://bad-json.org/about/privacy/""""/////d/e/e/e/e//&*(&(*&()))
+        }
+    http_version:
+  recorded_at: Fri, 28 Oct 2016 00:03:57 GMT
+recorded_with: VCR 2.6.0

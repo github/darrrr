@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+
+export RACK_ENV="test"
+. script/setup
+bundle exec rspec
