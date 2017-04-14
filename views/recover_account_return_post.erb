@@ -1,0 +1,12 @@
+<h1>This is totally facebook.com</h1>
+
+<p>We've authenticated this request with 2fa and stuff. According to us, you are who you say you are.</p>
+
+<p>Coutnersigned token:</p>
+<pre> <%= token %> </pre>
+
+<p>Would you like to try to prove to <%= recover_account_return_endpoint %> that you are who we say you are?</p>
+<form method="post" action="<%= recover_account_return_endpoint %>">
+  <input type="hidden" name="token" value="<%= token %>">
+  <input type="submit" value="Recover token">
+</form>

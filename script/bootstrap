@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e
+
+bundle install -j 16 --without production
+
+if [ "$DAR_ENV" != "ci" ]; then
+  brew install phantomjs
+fi
+
+. script/setup
+
+bundle exec rake db:create
+bundle exec rake db:migrate
+RACK_ENV=test bundle exec rake db:migrate

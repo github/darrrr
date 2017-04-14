@@ -1,0 +1,28 @@
+#!/bin/bash
+
+set -e
+
+if [ ! -f prime256v1-key.pem ]; then
+    openssl ecparam -name prime256v1 -genkey -noout -out prime256v1-key.pem
+    openssl ec -in prime256v1-key.pem -pubout -out prime256v1-pub.pem
+fi
+
+if [ ! -f prime256v1-key-countersign.pem ]; then
+    openssl ecparam -name prime256v1 -genkey -noout -out prime256v1-key-countersign.pem
+    openssl ec -in prime256v1-key-countersign.pem -pubout -out prime256v1-pub-countersign.pem
+fi
+
+if [ ! -f aes_key ]; then
+    openssl rand -hex 32 > aes_key
+fi
+
+if [ ! -f cookie_secret ]; then
+    openssl rand -hex 32 > cookie_secret
+fi
+
+export RECOVERY_PROVIDER_PRIVATE_KEY=`perl -p -e 's/\R//g; s/-----[\w\s]+-----//' prime256v1-key-countersign.pem`
+export ACCOUNT_PROVIDER_PRIVATE_KEY=`perl -p -e 's/\R//g; s/-----[\w\s]+-----//' prime256v1-key.pem`
+export RECOVERY_PROVIDER_PUBLIC_KEY=`perl -p -e 's/\R//g; s/-----[\w\s]+-----//' prime256v1-pub-countersign.pem`
+export ACCOUNT_PROVIDER_PUBLIC_KEY=`perl -p -e 's/\R//g; s/-----[\w\s]+-----//' prime256v1-pub.pem`
+export TOKEN_DATA_AES_KEY=`cat aes_key`
+export COOKIE_SECRET=`cat cookie_secret`
