@@ -2,8 +2,6 @@ The Delegated Account Recovery Rigid Reusable Ruby (aka D.a.r.r.r.r. or "Darrrr"
 
 Along with a fully featured library, a proof of concept application is provided in this repo.
 
-![Pirates (source: https://commons.wikimedia.org/wiki/File:Pirates.svg)](https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Pirates.svg/500px-Pirates.svg.png)
-
 ## Configuration
 
 An account provider (e.g. GitHub) is someone who stores a token with someone else (a recovery provider e.g. Facebook) in order to grant access to an account.
