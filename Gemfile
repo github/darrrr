@@ -12,7 +12,8 @@ gem "dalli"
 
 group :development do
   gem "pry-nav"
-  gem "sqlite3"
+  gem "jdbc-sqlite3", :platform => :jruby
+  gem "sqlite3", :platform => [:ruby, :mswin, :mingw]
 end
 
 group :test do

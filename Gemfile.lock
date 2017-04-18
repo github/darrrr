@@ -206,6 +206,7 @@ DEPENDENCIES
   darrrr!
   database_cleaner
   guard-rspec
+  jdbc-sqlite3
   mechanize
   pg
   poltergeist
