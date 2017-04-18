@@ -1,12 +1,11 @@
 language: ruby
 rvm:
- - 2.2
- - 2.3.1
+ - 2.2.6
+ - 2.3.3
  - 2.4.1
+bundler_args: --without production
 script:
   - bundle exec rspec spec
-services:
-  - postgresql
 before_script:
   - bundle exec rake db:create
   - bundle exec rake db:migrate

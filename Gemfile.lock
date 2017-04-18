@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    darrrr (0.0.1)
+    darrrr (0.0.2)
       addressable
       bindata
       faraday
@@ -26,7 +26,7 @@ GEM
       public_suffix (~> 2.0, >= 2.0.2)
     arel (7.1.4)
     backports (3.6.8)
-    bindata (2.4.0)
+    bindata (2.3.5)
     capybara (2.12.1)
       addressable
       mime-types (>= 1.16)
@@ -206,6 +206,7 @@ DEPENDENCIES
   darrrr!
   database_cleaner
   guard-rspec
+  jdbc-sqlite3
   mechanize
   pg
   poltergeist
