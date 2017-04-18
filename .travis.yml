@@ -1,13 +1,11 @@
 language: ruby
 rvm:
- - 2.0.0-p648
- - 2.1.10
  - 2.2.6
  - 2.3.3
  - 2.4.1
  - jruby-9.1.5.0
  - jruby-1.7.26
-
+bundler_args: --without production
 script:
   - bundle exec rspec spec
 before_script:
