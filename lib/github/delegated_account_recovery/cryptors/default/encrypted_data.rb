@@ -49,11 +49,11 @@ module GitHub
 
           ciphertext = cipher.update(data.to_s) + cipher.final
 
-          token = EncryptedDataIO.new.tap do |data|
-            data.version = CIPHER_VERSION
-            data.auth_tag = cipher.auth_tag.bytes
-            data.iv = iv.bytes
-            data.ciphertext = ciphertext.bytes
+          token = EncryptedDataIO.new.tap do |edata|
+            edata.version = CIPHER_VERSION
+            edata.auth_tag = cipher.auth_tag.bytes
+            edata.iv = iv.bytes
+            edata.ciphertext = ciphertext.bytes
           end
 
           new(token)
