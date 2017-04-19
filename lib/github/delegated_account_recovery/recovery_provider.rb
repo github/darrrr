@@ -14,7 +14,7 @@ module GitHub
       ]
       REQUIRED_FIELDS = URL_FIELDS + INTEGER_FIELDS + BASE64_FIELDS
 
-      attr_accessor *REQUIRED_FIELDS
+      attr_accessor *(REQUIRED_FIELDS)
       attr_accessor :save_token_async_api_iframe # optional
       attr_accessor :signing_private_key
       alias :origin :issuer
