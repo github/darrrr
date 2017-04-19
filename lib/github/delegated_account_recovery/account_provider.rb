@@ -16,8 +16,8 @@ module GitHub
       # These are the fields required by the spec
       REQUIRED_FIELDS = FIELDS + URL_FIELDS
 
-      attr_accessor *REQUIRED_FIELDS
-      attr_accessor *PRIVATE_FIELDS
+      attr_accessor *(REQUIRED_FIELDS)
+      attr_accessor *(PRIVATE_FIELDS)
 
       alias :origin :issuer
 
