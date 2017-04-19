@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/github/darrrr.svg?branch=master)](https://travis-ci.org/github/darrrr) [![Code Climate](https://codeclimate.com/github/github/darrrr/badges/gpa.svg)](https://codeclimate.com/github/github/darrrr)
+
 The Delegated Account Recovery Rigid Reusable Ruby (aka D.a.r.r.r.r. or "Darrrr") library is meant to be used as the fully-complete plumbing in your Rack application when implementing the [Delegated Account Recovery specification](https://github.com/facebook/DelegatedRecoverySpecification). This library is currently used for the implementation at [GitHub](https://githubengineering.com/recover-accounts-elsewhere/).
 
 Along with a fully featured library, a proof of concept application is provided in this repo.
