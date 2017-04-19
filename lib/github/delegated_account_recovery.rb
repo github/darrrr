@@ -141,7 +141,7 @@ module GitHub
         this_recovery_provider.to_h
       end
 
-      def with_encryptor(encryptor, &block)
+      def with_encryptor(encryptor)
         raise ArgumentError, "A block must be supplied" unless block_given?
         unless valid_encryptor?(encryptor)
           raise ArgumentError, "custom encryption class must respond to all of #{REQUIRED_CRYPTO_OPS}"

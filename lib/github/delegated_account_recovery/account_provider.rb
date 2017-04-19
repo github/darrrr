@@ -16,8 +16,8 @@ module GitHub
       # These are the fields required by the spec
       REQUIRED_FIELDS = FIELDS + URL_FIELDS
 
-      attr_accessor *REQUIRED_FIELDS
-      attr_accessor *PRIVATE_FIELDS
+      attr_accessor *(REQUIRED_FIELDS)
+      attr_accessor *(PRIVATE_FIELDS)
 
       alias :origin :issuer
 
@@ -119,13 +119,12 @@ module GitHub
 
         # 9. Decrypt the data field from the original recovery token and parse its information, if present.
         begin
-          decrypted_data = recovery_token.decode
-        rescue CryptoError => e
+          recovery_token.decode
+        rescue CryptoError
           raise CountersignedTokenError.new("Recovery token data could not be decrypted", :indecipherable_opaque_data)
         end
 
         # 10. Apply any additional processing which provider-specific data in the opaque data portion may indicate is necessary.
-        # TODO ensure pesisted token data matches what's in decrypted_data (to be added in a later PR)
         begin
           if DateTime.parse(parsed_countersigned_token.issued_time).utc < (Time.now - CLOCK_SKEW).utc
             raise CountersignedTokenError.new("Countersigned recovery token issued at time is too far in the past", :stale_token)
