@@ -70,6 +70,7 @@ describe Darrrr, vcr: { :cassette_name => "delegated_account_recovery/recovery_p
 
     module Rot13Encryptor
       class << self
+        # credit: https://gist.github.com/rwoeber/274126
         def rot13(string)
           string.tr("A-Za-z", "N-ZA-Mn-za-m")
         end
