@@ -74,7 +74,7 @@ module GitHub
         end
 
         JSON.parse(body)
-      rescue JSON::ParserError
+      rescue ::JSON::ParserError
         raise ProviderConfigError.new("Unable to parse recovery provider config for #{self.origin}:#{body[0..100]}")
       end
 
