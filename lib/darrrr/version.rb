@@ -1,5 +1,3 @@
-module GitHub
-  module DelegatedAccountRecovery
-    VERSION = "0.0.3"
-  end
+module Darrrr
+  VERSION = "0.0.3"
 end
