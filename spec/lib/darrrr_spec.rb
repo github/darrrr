@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "../../spec_helper"
+require_relative "../spec_helper"
 
 describe Darrrr, vcr: { :cassette_name => "delegated_account_recovery/recovery_provider" } do
   context "#recovery_provider" do
@@ -122,7 +122,7 @@ describe Darrrr, vcr: { :cassette_name => "delegated_account_recovery/recovery_p
     end
 
     it "allows you to specify a temporary using a block" do
-      expect(Darrrr.encryptor).to be(GitHub::DelegatedAccountRecovery::DefaultEncryptor)
+      expect(Darrrr.encryptor).to be(Darrrr::DefaultEncryptor)
 
       Darrrr.with_encryptor(Rot13Encryptor) do
         expect(Darrrr.encryptor).to be(Rot13Encryptor)
@@ -139,7 +139,7 @@ describe Darrrr, vcr: { :cassette_name => "delegated_account_recovery/recovery_p
         expect(recovery_token.decode).to eq("foo")
       end
 
-      expect(Darrrr.encryptor).to be(GitHub::DelegatedAccountRecovery::DefaultEncryptor)
+      expect(Darrrr.encryptor).to be(Darrrr::DefaultEncryptor)
     end
   end
 end

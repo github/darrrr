@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "../../../spec_helper"
+require_relative "../../spec_helper"
 
 module Darrrr
   describe AccountProvider, vcr: { :cassette_name => "delegated_account_recovery/recovery_provider" } do
