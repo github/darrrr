@@ -4,6 +4,8 @@ The Delegated Account Recovery Rigid Reusable Ruby (aka D.a.r.r.r.r. or "Darrrr"
 
 Along with a fully featured library, a proof of concept application is provided in this repo.
 
+![](/logos/dar-logo-transparent-small.png)
+
 ## Configuration
 
 An account provider (e.g. GitHub) is someone who stores a token with someone else (a recovery provider e.g. Facebook) in order to grant access to an account.
@@ -201,3 +203,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 ## License
 
 `darrrr` is licensed under the [MIT license](LICENSE.md).
+
+The MIT license grant is not for GitHub's trademarks, which include the logo designs. GitHub reserves all trademark and copyright rights in and to all GitHub trademarks. GitHub's logos include, for instance, the stylized designs that include "logo" in the file title in the following folder:  [logos](/logos).
+
+GitHub® and its stylized versions and the Invertocat mark are GitHub's Trademarks or registered Trademarks. When using GitHub's logos, be sure to follow the GitHub [logo guidelines](https://github.com/logos).
