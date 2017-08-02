@@ -1,9 +1,8 @@
 # coding: utf-8
-require_relative "lib/darrrr/version"
 
 Gem::Specification.new do |gem|
   gem.name    = "darrrr"
-  gem.version = Darrrr::VERSION
+  gem.version = "0.0.3"
 
   gem.summary = "Client library for the Delegated Recovery spec"
   gem.description = "See https://www.facebook.com/notes/protect-the-graph/improving-account-security-with-delegated-recovery/1833022090271267/"
