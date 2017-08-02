@@ -117,11 +117,7 @@ module Darrrr
       # TODO not required, to be implemented later
 
       # 9. Decrypt the data field from the original recovery token and parse its information, if present.
-      begin
-        recovery_token.decode
-      rescue CryptoError
-        raise CountersignedTokenError.new("Recovery token data could not be decrypted", :indecipherable_opaque_data)
-      end
+      # no decryption here is attempted. Attempts to call `decode` will just fail.
 
       # 10. Apply any additional processing which provider-specific data in the opaque data portion may indicate is necessary.
       begin
