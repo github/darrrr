@@ -12,3 +12,4 @@ test/dummy/tmp/
 aes_key
 cookie_secret
 *.sqlite3
+.DS_Store
