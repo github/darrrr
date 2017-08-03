@@ -41,7 +41,7 @@ module Darrrr
       # returns a RecoveryToken.
       def build(issuer:, audience:, type:)
         token = RecoveryTokenWriter.new.tap do |token|
-          token.token_id = SecureRandom.random_bytes(16).bytes.to_a
+          token.token_id = token_id
           token.issuer = issuer.origin
           token.issued_time = Time.now.utc.iso8601
           token.options = 0 # when the token-status endpoint is implemented, change this to 1
@@ -50,6 +50,12 @@ module Darrrr
           token.token_type = type
         end
         new(token)
+      end
+
+      # token ID generates a random array of bytes.
+      # this method only exists so that it can be stubbed.
+      def token_id
+        SecureRandom.random_bytes(16).bytes.to_a
       end
 
       # serialized_data: a binary string representation of a RecoveryToken.
