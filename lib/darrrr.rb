@@ -19,24 +19,25 @@ require_relative "darrrr/cryptors/default/encrypted_data"
 require_relative "darrrr/cryptors/default/encrypted_data_io"
 
 module Darrrr
+  class DelegatedRecoveryError < StandardError; end
   # Represents a binary serialization error
-  class RecoveryTokenSerializationError < StandardError; end
+  class RecoveryTokenSerializationError < DelegatedRecoveryError; end
 
   # Represents invalid data within a valid token
   #  (e.g. wrong `version` number, invalid token `type`)
-  class TokenFormatError < StandardError; end
+  class TokenFormatError < DelegatedRecoveryError; end
 
   # Represents all crypto errors
   #   (e.g. invalid keys, invalid signature, decrypt failures)
-  class CryptoError < StandardError; end
+  class CryptoError < DelegatedRecoveryError; end
 
   # Represents providers supplying invalid configurations
   #  (e.g. non-https URLs, missing required fields, http errors)
-  class ProviderConfigError < StandardError; end
+  class ProviderConfigError < DelegatedRecoveryError; end
 
   # Represents an invalid countersigned recovery token.
   #  (e.g. invalid signature, invalid nested token, unregistered provider, stale tokens)
-  class CountersignedTokenError < StandardError
+  class CountersignedTokenError < DelegatedRecoveryError
     attr_reader :key
     def initialize(message, key)
       super(message)
@@ -46,11 +47,11 @@ module Darrrr
 
   # Represents an invalid recovery token.
   #  (e.g. invalid signature, unregistered provider, stale tokens)
-  class RecoveryTokenError < StandardError; end
+  class RecoveryTokenError < DelegatedRecoveryError; end
 
   # Represents a call to to `recovery_provider` or `account_provider` that
   # has not been registered.
-  class UnknownProviderError < ArgumentError; end
+  class UnknownProviderError < DelegatedRecoveryError; end
 
   include Constants
 
