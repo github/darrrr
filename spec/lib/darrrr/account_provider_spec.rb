@@ -180,9 +180,10 @@ module Darrrr
       payload = Base64.strict_decode64(account_provider.seal(token))
       countersigned_token = recovery_provider.seal(raw_token(data: payload))
 
+      validated_token = account_provider.validate_countersigned_recovery_token!(countersigned_token)
       expect {
-        account_provider.validate_countersigned_recovery_token!(countersigned_token)
-      }.to raise_error(CountersignedTokenError, /Recovery token data could not be decrypted/)
+        validated_token.decode
+      }.to raise_error(CryptoError, /Unable to decrypt data/)
     end
   end
 end
