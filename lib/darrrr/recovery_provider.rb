@@ -13,9 +13,11 @@ module Darrrr
     ]
     REQUIRED_FIELDS = URL_FIELDS + INTEGER_FIELDS + BASE64_FIELDS
 
-    attr_accessor(*REQUIRED_FIELDS)
+    attr_reader *(REQUIRED_FIELDS - [:countersign_pubkeys_secp256r1])
+    attr_writer *REQUIRED_FIELDS
+    attr_writer :signing_private_key, :token_max_size
     attr_accessor :save_token_async_api_iframe # optional
-    attr_accessor :signing_private_key
+
     alias :origin :issuer
 
     # optional field
@@ -25,7 +27,7 @@ module Darrrr
     def to_h
       {
         "issuer" => self.issuer,
-        "countersign-pubkeys-secp256r1" => self.countersign_pubkeys_secp256r1.dup,
+        "countersign-pubkeys-secp256r1" => self.unseal_keys.dup,
         "token-max-size" => self.token_max_size,
         "save-token" => self.save_token,
         "recover-account" => self.recover_account,
@@ -37,8 +39,15 @@ module Darrrr
     # The CryptoHelper defines an `unseal` method that requires us to define
     # a `unseal_keys` method that will return the set of keys that are valid
     # when verifying the signature on a sealed key.
+    #
+    # returns the value of `countersign_pubkeys_secp256r1` or executes a proc
+    # passing `self` as the first argument.
     def unseal_keys
-      countersign_pubkeys_secp256r1
+      if @countersign_pubkeys_secp256r1.respond_to?(:call)
+        @countersign_pubkeys_secp256r1.call(self)
+      else
+        @countersign_pubkeys_secp256r1
+      end
     end
 
     # The URL representing the location of the token. Used to initiate a recovery.

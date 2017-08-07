@@ -139,7 +139,7 @@ module Darrrr
 
     it "countersigned tokens can be unsealed when there are multiple unseal keys" do
       expect(recovery_provider).to receive(:unseal_keys).and_return(
-        [recovery_provider.countersign_pubkeys_secp256r1[0], unused_unseal_key]
+        [recovery_provider.unseal_keys[0], unused_unseal_key]
       )
       sealed_token = Base64.strict_decode64(account_provider.seal(token))
       countersigned_token = recovery_provider.countersign_token(sealed_token)
@@ -151,7 +151,7 @@ module Darrrr
     it "countersigned tokens can be unsealed when there are multiple unseal keys when the order is swapped" do
       # Switch up the order just to make sure it works regardless of which comes first.
       expect(recovery_provider).to receive(:unseal_keys).and_return(
-        [unused_unseal_key, recovery_provider.countersign_pubkeys_secp256r1[0]]
+        [unused_unseal_key, recovery_provider.unseal_keys[0]]
       )
       sealed_token = Base64.strict_decode64(account_provider.seal(token))
       countersigned_token = recovery_provider.countersign_token(sealed_token)

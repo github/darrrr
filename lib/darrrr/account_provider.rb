@@ -15,23 +15,31 @@ module Darrrr
     # These are the fields required by the spec
     REQUIRED_FIELDS = FIELDS + URL_FIELDS
 
-    attr_accessor(*REQUIRED_FIELDS)
-    attr_accessor(*PRIVATE_FIELDS)
+    attr_writer *REQUIRED_FIELDS
+    attr_writer *PRIVATE_FIELDS
+    attr_reader *(REQUIRED_FIELDS - [:tokensign_pubkeys_secp256r1])
 
     alias :origin :issuer
 
     # The CryptoHelper defines an `unseal` method that requires us to
     # define a `unseal_keys` method that will return the set of keys that
     # are valid when verifying the signature on a sealed key.
+    #
+    # returns the value of `tokensign_pubkeys_secp256r1` or executes a proc
+    # passing `self` as the first argument.
     def unseal_keys
-      tokensign_pubkeys_secp256r1
+      if @tokensign_pubkeys_secp256r1.respond_to?(:call)
+        @tokensign_pubkeys_secp256r1.call(self)
+      else
+        @tokensign_pubkeys_secp256r1
+      end
     end
 
     # Used to serve content at /.well-known/delegated-account-recovery/configuration
     def to_h
       {
         "issuer" => self.issuer,
-        "tokensign-pubkeys-secp256r1" => self.tokensign_pubkeys_secp256r1.dup,
+        "tokensign-pubkeys-secp256r1" => self.unseal_keys.dup,
         "save-token-return" => self.save_token_return,
         "recover-account-return" => self.recover_account_return,
         "privacy-policy" => self.privacy_policy,

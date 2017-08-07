@@ -10,7 +10,7 @@ Along with a fully featured library, a proof of concept application is provided 
 
 An account provider (e.g. GitHub) is someone who stores a token with someone else (a recovery provider e.g. Facebook) in order to grant access to an account.
 
-In `config/initializers` or any location that is run during application setup, add a file:
+In `config/initializers` or any location that is run during application setup, add a file. **NOTE:** `proc`s are valid values for `countersign_pubkeys_secp256r1` and `tokensign_pubkeys_secp256r1`
 
 ```ruby
 Darrrr.authority = "http://localhost:9292"
@@ -21,14 +21,14 @@ Darrrr.icon_152px = "#{Darrrr.authority}/icon.png"
 Darrrr::AccountProvider.configure do |config|
   config.signing_private_key = ENV["ACCOUNT_PROVIDER_PRIVATE_KEY"]
   config.symmetric_key = ENV["TOKEN_DATA_AES_KEY"]
-  config.tokensign_pubkeys_secp256r1 = [ENV["ACCOUNT_PROVIDER_PUBLIC_KEY"]]
+  config.tokensign_pubkeys_secp256r1 = [ENV["ACCOUNT_PROVIDER_PUBLIC_KEY"]] || proc { "you wouldn't do this in real life but procs are supported for this value" }
   config.save_token_return = "#{Darrrr.authority}/account-provider/save-token-return"
   config.recover_account_return = "#{Darrrr.authority}/account-provider/recover-account-return"
 end
 
 Darrrr::RecoveryProvider.configure do |config|
   config.signing_private_key = ENV["RECOVERY_PROVIDER_PRIVATE_KEY"]
-  config.countersign_pubkeys_secp256r1 = [ENV["RECOVERY_PROVIDER_PUBLIC_KEY"]]
+  config.countersign_pubkeys_secp256r1 = [ENV["RECOVERY_PROVIDER_PUBLIC_KEY"]] || proc { "you wouldn't do this in real life but procs are supported for this value" }
   config.token_max_size = 8192
   config.save_token = "#{Darrrr.authority}/recovery-provider/save-token"
   config.recover_account = "#{Darrrr.authority}/recovery-provider/recover-account"

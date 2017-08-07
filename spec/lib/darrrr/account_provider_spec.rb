@@ -36,8 +36,8 @@ module Darrrr
 
     it "tokens can be sealed and unsealed when there are multiple unseal keys" do
       expect(account_provider).to receive(:unseal_keys).and_return(
-        [account_provider.tokensign_pubkeys_secp256r1[0], unused_unseal_key]
-      )
+        [account_provider.unseal_keys[0], unused_unseal_key]
+      ).at_least(:once)
       payload = Base64.strict_decode64(account_provider.seal(token))
       unsealed_token = account_provider.unseal(payload)
       expect(token.token_object).to eq(unsealed_token.token_object)
@@ -47,8 +47,9 @@ module Darrrr
     it "tokens can be sealed and unsealed when there are multiple unseal keys when ordered in reverse" do
       # Switch up the order just to make sure it works regardless of which comes first.
       expect(account_provider).to receive(:unseal_keys).and_return(
-        [unused_unseal_key, account_provider.tokensign_pubkeys_secp256r1[0]]
-      )
+        [unused_unseal_key, account_provider.unseal_keys[0]]
+      ).at_least(:once)
+
       payload = Base64.strict_decode64(account_provider.seal(token))
       unsealed_token = account_provider.unseal(payload)
       expect(token.token_object).to eq(unsealed_token.token_object)

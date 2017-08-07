@@ -10,9 +10,9 @@ module Darrrr
     # returns a base64 value for the binary token string and the signature
     # of the token.
     def seal(token)
-      raise RuntimeError, "signing private key must be set" unless self.signing_private_key
+      raise RuntimeError, "signing private key must be set" unless self.instance_variable_get(:@signing_private_key)
       binary_token = token.to_binary_s
-      signature = Darrrr.encryptor.sign(binary_token, self.signing_private_key)
+      signature = Darrrr.encryptor.sign(binary_token, self.instance_variable_get(:@signing_private_key))
       Base64.strict_encode64([binary_token, signature].join)
     end
 

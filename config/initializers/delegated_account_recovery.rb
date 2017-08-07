@@ -8,14 +8,18 @@ Darrrr.icon_152px = "#{Darrrr.authority}/icon.png"
 Darrrr::AccountProvider.configure do |config|
   config.signing_private_key = ENV["ACCOUNT_PROVIDER_PRIVATE_KEY"]
   config.symmetric_key = ENV["TOKEN_DATA_AES_KEY"]
-  config.tokensign_pubkeys_secp256r1 = [ENV["ACCOUNT_PROVIDER_PUBLIC_KEY"]]
+  config.tokensign_pubkeys_secp256r1 = lambda do |account_provider|
+    [ENV["ACCOUNT_PROVIDER_PUBLIC_KEY"]]
+  end
   config.save_token_return = "#{Darrrr.authority}/account-provider/save-token-return"
   config.recover_account_return = "#{Darrrr.authority}/account-provider/recover-account-return"
 end
 
 Darrrr::RecoveryProvider.configure do |config|
   config.signing_private_key = ENV["RECOVERY_PROVIDER_PRIVATE_KEY"]
-  config.countersign_pubkeys_secp256r1 = [ENV["RECOVERY_PROVIDER_PUBLIC_KEY"]]
+  config.countersign_pubkeys_secp256r1 = lambda do |recovery_provider|
+    [ENV["RECOVERY_PROVIDER_PUBLIC_KEY"]]
+  end
   config.token_max_size = 8192
   config.save_token = "#{Darrrr.authority}/recovery-provider/save-token"
   config.recover_account = "#{Darrrr.authority}/recovery-provider/recover-account"

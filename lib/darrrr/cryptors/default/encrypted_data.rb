@@ -82,7 +82,7 @@ module Darrrr
 
         OpenSSL::Cipher.new(EncryptedData::CIPHER).tap do |cipher|
           cipher.send(mode)
-          cipher.key = [Darrrr.this_account_provider.symmetric_key].pack("H*")
+          cipher.key = [Darrrr.this_account_provider.instance_variable_get(:@symmetric_key)].pack("H*")
         end
       end
     end

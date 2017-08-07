@@ -45,6 +45,16 @@ describe Darrrr, vcr: { :cassette_name => "delegated_account_recovery/recovery_p
     end
   end
 
+  it "allows procs as values for tokensign_pubkeys_secp256r1" do
+    expect(Darrrr.this_account_provider.instance_variable_get(:@tokensign_pubkeys_secp256r1)).to be_a(Proc)
+    expect(Darrrr.this_account_provider.unseal_keys).to eq([ENV["ACCOUNT_PROVIDER_PUBLIC_KEY"]])
+  end
+
+  it "allows procs as values for countersign_pubkeys_secp256r1" do
+    expect(Darrrr.this_recovery_provider.instance_variable_get(:@countersign_pubkeys_secp256r1)).to be_a(Proc)
+    expect(Darrrr.this_recovery_provider.unseal_keys).to eq([ENV["RECOVERY_PROVIDER_PUBLIC_KEY"]])
+  end
+
   context "#account_provider_config" do
     it "returns a hash" do
       expect(Darrrr.account_provider_config).to be_kind_of(Hash)
