@@ -55,7 +55,7 @@ module Darrrr
     #   provide some assurance the same browser was used.
     def generate_recovery_token(data:, audience:)
       RecoveryToken.build(issuer: self, audience: audience, type: RECOVERY_TOKEN_TYPE).tap do |token|
-        token.data = Darrrr.encryptor.encrypt(data)
+        token.data = Darrrr.encryptor.encrypt(data, self)
       end
     end
 
