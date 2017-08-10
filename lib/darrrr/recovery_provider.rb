@@ -42,9 +42,9 @@ module Darrrr
     #
     # returns the value of `countersign_pubkeys_secp256r1` or executes a proc
     # passing `self` as the first argument.
-    def unseal_keys
+    def unseal_keys(context = nil)
       if @countersign_pubkeys_secp256r1.respond_to?(:call)
-        @countersign_pubkeys_secp256r1.call(self)
+        @countersign_pubkeys_secp256r1.call(self, context)
       else
         @countersign_pubkeys_secp256r1
       end
@@ -65,7 +65,7 @@ module Darrrr
     #
     # returns a Base64 encoded representation of the countersigned token
     # and the signature over the token.
-    def countersign_token(token)
+    def countersign_token(token, context = nil)
       begin
         account_provider = RecoveryToken.account_provider_issuer(token)
       rescue RecoveryTokenSerializationError, UnknownProviderError
@@ -79,14 +79,14 @@ module Darrrr
       )
 
       counter_recovery_token.data = token
-      seal(counter_recovery_token)
+      seal(counter_recovery_token, context)
     end
 
     # Validate the token according to the processing instructions for the
     # save-token endpoint.
     #
     # Returns a validated token
-    def validate_recovery_token!(token)
+    def validate_recovery_token!(token, context = nil)
       errors = []
 
       # 1. Authenticate the User. The exact nature of how the Recovery Provider authenticates the User is beyond the scope of this specification.
@@ -103,7 +103,7 @@ module Darrrr
       # 3. Validate that the version value is 0.
       # 5. Validate the signature over the token according to processing rules for the algorithm implied by the version.
       begin
-        recovery_token = account_provider.unseal(token)
+        recovery_token = account_provider.unseal(token, context)
       rescue CryptoError => e
         raise RecoveryTokenError.new("Unable to verify signature of token")
       rescue TokenFormatError => e

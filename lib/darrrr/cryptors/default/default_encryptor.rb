@@ -6,18 +6,20 @@ module Darrrr
       # Encrypts the data in an opaque way
       #
       # data: the secret to be encrypted
+      # context: arbitrary data originally passed in via Provider#seal
       #
       # returns a byte array representation of the data
-      def encrypt(data)
+      def encrypt(data, _provider, _context = nil)
         EncryptedData.build(data).to_binary_s
       end
 
       # Decrypts the data
       #
       # ciphertext: the byte array to be decrypted
+      # context: arbitrary data originally passed in via RecoveryToken#decode
       #
       # returns a string
-      def decrypt(ciphertext)
+      def decrypt(ciphertext, _provider, _context = nil)
         EncryptedData.parse(ciphertext).decrypt
       end
 
@@ -25,9 +27,10 @@ module Darrrr
       # payload: binary serialized recovery token (to_binary_s).
       #
       # key: the private EC key used to sign the token
+      # context: arbitrary data originally passed in via Provider#seal
       #
       # returns signature in ASN.1 DER r + s sequence
-      def sign(payload, key)
+      def sign(payload, key, _provider, context = nil)
         digest = DIGEST.new.digest(payload)
         ec = OpenSSL::PKey::EC.new(Base64.strict_decode64(key))
         ec.dsa_sign_asn1(digest)
@@ -36,9 +39,10 @@ module Darrrr
       # payload: token in binary form
       # signature: signature of the binary token
       # key: the EC public key used to verify the signature
+      # context: arbitrary data originally passed in via #unseal
       #
       # returns true if signature validates the payload
-      def verify(payload, signature, key)
+      def verify(payload, signature, key, _provider, _context = nil)
         public_key_hex = format_key(key)
         pkey = OpenSSL::PKey::EC.new(GROUP)
         public_key_bn = OpenSSL::BN.new(public_key_hex, 16)

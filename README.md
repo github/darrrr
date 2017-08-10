@@ -21,14 +21,14 @@ Darrrr.icon_152px = "#{Darrrr.authority}/icon.png"
 Darrrr::AccountProvider.configure do |config|
   config.signing_private_key = ENV["ACCOUNT_PROVIDER_PRIVATE_KEY"]
   config.symmetric_key = ENV["TOKEN_DATA_AES_KEY"]
-  config.tokensign_pubkeys_secp256r1 = [ENV["ACCOUNT_PROVIDER_PUBLIC_KEY"]] || proc { "you wouldn't do this in real life but procs are supported for this value" }
+  config.tokensign_pubkeys_secp256r1 = [ENV["ACCOUNT_PROVIDER_PUBLIC_KEY"]] || lambda { |provider, context| "you wouldn't do this in real life but procs are supported for this value" }
   config.save_token_return = "#{Darrrr.authority}/account-provider/save-token-return"
   config.recover_account_return = "#{Darrrr.authority}/account-provider/recover-account-return"
 end
 
 Darrrr::RecoveryProvider.configure do |config|
   config.signing_private_key = ENV["RECOVERY_PROVIDER_PRIVATE_KEY"]
-  config.countersign_pubkeys_secp256r1 = [ENV["RECOVERY_PROVIDER_PUBLIC_KEY"]] || proc { "you wouldn't do this in real life but procs are supported for this value" }
+  config.countersign_pubkeys_secp256r1 = [ENV["RECOVERY_PROVIDER_PUBLIC_KEY"]] || lambda { |provider, context| "you wouldn't do this in real life but procs are supported for this value" }
   config.token_max_size = 8192
   config.save_token = "#{Darrrr.authority}/recovery-provider/save-token"
   config.recover_account = "#{Darrrr.authority}/recovery-provider/recover-account"
@@ -72,7 +72,7 @@ Set `Darrrr.custom_encryptor = MyCustomEncryptor`
 ```ruby
 Darrrr.with_encryptor(MyCustomEncryptor) do
   # perform DAR actions using MyCustomEncryptor as the crypto provider
-  token = Darrrr.this_account_provider.generate_recovery_token(data: "foo", audience: recovery_provider)
+  recovery_token, sealed_token = Darrrr.this_account_provider.generate_recovery_token(data: "foo", audience: recovery_provider, context: { user: current_user })
 end
 ```
 

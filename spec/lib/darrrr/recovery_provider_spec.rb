@@ -8,7 +8,7 @@ module Darrrr
 
     let(:recovery_provider) { example_recovery_provider }
     let(:account_provider) { AccountProvider.this }
-    let(:token) { account_provider.generate_recovery_token(data: "data", audience: recovery_provider) }
+    let(:token) { account_provider.generate_recovery_token(data: "data", audience: recovery_provider).first }
 
     let(:raw_token) do
       RecoveryTokenWriter.new.tap do |token|
@@ -78,19 +78,19 @@ module Darrrr
     end
 
     it "can verify recovery tokens" do
-      sealed_token = account_provider.seal(token)
+      sealed_token = account_provider.send(:seal, token)
       expect(recovery_provider.validate_recovery_token!(Base64.strict_decode64(sealed_token))).to_not be_nil
     end
 
     it "rejects tokens with invalid signatures" do
-      sealed_token = account_provider.seal(token)[0..-5]
+      sealed_token = account_provider.send(:seal, token)[0..-5]
       expect {
         recovery_provider.validate_recovery_token!(Base64.strict_decode64(sealed_token))
       }.to raise_error(RecoveryTokenError, /Unable to verify signature of token/)
     end
 
     it "rejects invalid tokens" do
-      sealed_token = account_provider.seal(token)[5..0]
+      sealed_token = account_provider.send(:seal, token)[5..0]
       expect {
         recovery_provider.validate_recovery_token!(Base64.strict_decode64(sealed_token))
       }.to raise_error(RecoveryTokenError, /Could not determine provider/)
@@ -99,7 +99,7 @@ module Darrrr
     it "rejects tokens with invalid version numbers" do
       raw_token.version = 9999999
 
-      sealed_token = account_provider.seal(RecoveryToken.parse(raw_token.to_binary_s))
+      sealed_token = account_provider.send(:seal, RecoveryToken.parse(raw_token.to_binary_s))
       expect {
         recovery_provider.validate_recovery_token!(Base64.strict_decode64(sealed_token))
       }.to raise_error(RecoveryTokenError, /Version field must be 0/)
@@ -107,7 +107,7 @@ module Darrrr
 
     it "rejects tokens with an 'old' issued at date" do
       raw_token.issued_time = (Time.new - CLOCK_SKEW - 1).iso8601
-      sealed_token = account_provider.seal(RecoveryToken.parse(raw_token.to_binary_s))
+      sealed_token = account_provider.send(:seal, RecoveryToken.parse(raw_token.to_binary_s))
       expect {
         recovery_provider.validate_recovery_token!(Base64.strict_decode64(sealed_token))
       }.to raise_error(RecoveryTokenError, /Issued at time is too far in the past/)
@@ -115,7 +115,7 @@ module Darrrr
 
     it "rejects tokens with an invalid issuer" do
       raw_token.audience = "foo.bar"
-      sealed_token = account_provider.seal(RecoveryToken.parse(raw_token.to_binary_s))
+      sealed_token = account_provider.send(:seal, RecoveryToken.parse(raw_token.to_binary_s))
       expect {
         recovery_provider.validate_recovery_token!(Base64.strict_decode64(sealed_token))
       }.to raise_error(RecoveryTokenError, /Unnacceptable audience/)
@@ -123,14 +123,14 @@ module Darrrr
 
     it "rejects tokens with an invalid token type" do
       raw_token.token_type = 999999999
-      sealed_token = account_provider.seal(RecoveryToken.parse(raw_token.to_binary_s))
+      sealed_token = account_provider.send(:seal, RecoveryToken.parse(raw_token.to_binary_s))
       expect {
         recovery_provider.validate_recovery_token!(Base64.strict_decode64(sealed_token))
       }.to raise_error(RecoveryTokenError, /Token type must be 0/)
     end
 
     it "countersigns tokens" do
-      sealed_token = Base64.strict_decode64(account_provider.seal(token))
+      sealed_token = Base64.strict_decode64(account_provider.send(:seal, token))
       countersigned_token = recovery_provider.countersign_token(sealed_token)
       raw_counter_token = recovery_provider.unseal(Base64.strict_decode64(countersigned_token))
       expect(sealed_token).to eq(raw_counter_token.data.to_binary_s)
@@ -141,7 +141,7 @@ module Darrrr
       expect(recovery_provider).to receive(:unseal_keys).and_return(
         [recovery_provider.unseal_keys[0], unused_unseal_key]
       )
-      sealed_token = Base64.strict_decode64(account_provider.seal(token))
+      sealed_token = Base64.strict_decode64(account_provider.send(:seal, token))
       countersigned_token = recovery_provider.countersign_token(sealed_token)
       raw_counter_token = recovery_provider.unseal(Base64.strict_decode64(countersigned_token))
       expect(sealed_token).to eq(raw_counter_token.data.to_binary_s)
@@ -153,7 +153,7 @@ module Darrrr
       expect(recovery_provider).to receive(:unseal_keys).and_return(
         [unused_unseal_key, recovery_provider.unseal_keys[0]]
       )
-      sealed_token = Base64.strict_decode64(account_provider.seal(token))
+      sealed_token = Base64.strict_decode64(account_provider.send(:seal, token))
       countersigned_token = recovery_provider.countersign_token(sealed_token)
       raw_counter_token = recovery_provider.unseal(Base64.strict_decode64(countersigned_token))
       expect(sealed_token).to eq(raw_counter_token.data.to_binary_s)
@@ -161,7 +161,7 @@ module Darrrr
     end
 
     it "doesn't countersign tokens it can't parse" do
-      sealed_token = Base64.strict_decode64(account_provider.seal(token)).reverse
+      sealed_token = Base64.strict_decode64(account_provider.send(:seal, token)).reverse
       expect {
         recovery_provider.countersign_token(sealed_token)
       }.to raise_error(TokenFormatError)
@@ -171,7 +171,7 @@ module Darrrr
       expect(recovery_provider).to receive(:unseal_keys).and_return(
         [unused_unseal_key]
       )
-      sealed_token = Base64.strict_decode64(account_provider.seal(token))
+      sealed_token = Base64.strict_decode64(account_provider.send(:seal, token))
       countersigned_token = recovery_provider.countersign_token(sealed_token)
       expect {
         recovery_provider.unseal(Base64.strict_decode64(countersigned_token))

@@ -6,7 +6,7 @@ class AccountProviderController < MainController
 
   post "/create" do
     recovery_provider = Darrrr.recovery_provider(params["recovery_provider"])
-    token = Darrrr.this_account_provider.generate_recovery_token(data: params["phrase"], audience: recovery_provider)
+    token, sealed_token = Darrrr.this_account_provider.generate_recovery_token(data: params["phrase"], audience: recovery_provider)
 
     ReferenceToken.create({
       provider: recovery_provider.origin,
@@ -19,7 +19,7 @@ class AccountProviderController < MainController
     erb :recovery_post, locals: {
       state: token.state_url,
       endpoint: recovery_provider.save_token,
-      payload: Darrrr.this_account_provider.seal(token),
+      payload: sealed_token,
       token: token, # just for debugging
     }
   end

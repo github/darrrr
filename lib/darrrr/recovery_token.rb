@@ -2,7 +2,7 @@
 
 # Handles binary serialization/deserialization of recovery token data. It does
 # not manage signing/verification of tokens.
-
+# Only account providers will ever call the decode function
 module Darrrr
   class RecoveryToken
     extend Forwardable
@@ -23,8 +23,8 @@ module Darrrr
     end
     private_class_method :new
 
-    def decode
-      Darrrr.encryptor.decrypt(self.data)
+    def decode(context = nil)
+      Darrrr.encryptor.decrypt(self.data, Darrrr.this_account_provider, context)
     end
 
     # A globally known location of the token, used to initiate a recovery

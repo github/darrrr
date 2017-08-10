@@ -4,6 +4,7 @@ module Darrrr
   class AccountProvider
     include CryptoHelper
     include Provider
+    private :seal
 
     # Only applicable when acting as a recovery provider
     PRIVATE_FIELDS = [:symmetric_key, :signing_private_key]
@@ -27,9 +28,9 @@ module Darrrr
     #
     # returns the value of `tokensign_pubkeys_secp256r1` or executes a proc
     # passing `self` as the first argument.
-    def unseal_keys
+    def unseal_keys(context = nil)
       if @tokensign_pubkeys_secp256r1.respond_to?(:call)
-        @tokensign_pubkeys_secp256r1.call(self)
+        @tokensign_pubkeys_secp256r1.call(self, context)
       else
         @tokensign_pubkeys_secp256r1
       end
@@ -51,12 +52,14 @@ module Darrrr
     #
     # data: value to encrypt in the token
     # provider: the recovery provider/audience of the token
-    # binding data: binding data value retrieved from recovery provider to
-    #   provide some assurance the same browser was used.
-    def generate_recovery_token(data:, audience:)
-      RecoveryToken.build(issuer: self, audience: audience, type: RECOVERY_TOKEN_TYPE).tap do |token|
-        token.data = Darrrr.encryptor.encrypt(data)
-      end
+    # context: arbitrary data passed on to underlying crypto operations
+    #
+    # returns a [RecoveryToken, b64 encoded sealed_token] tuple
+    def generate_recovery_token(data:, audience:, context: nil)
+      token = RecoveryToken.build(issuer: self, audience: audience, type: RECOVERY_TOKEN_TYPE)
+      token.data = Darrrr.encryptor.encrypt(data, self, context)
+
+      [token, seal(token, context)]
     end
 
     # Parses a countersigned_token and returns the nested recovery token
@@ -74,10 +77,11 @@ module Darrrr
     #
     # countersigned_token: our original recovery token wrapped in recovery
     # token instance that is signed by the recovery provider.
+    # context: arbitrary data to be passed to Provider#unseal.
     #
     # returns a verified recovery token or raises
     # an error if the token fails validation.
-    def validate_countersigned_recovery_token!(countersigned_token)
+    def validate_countersigned_recovery_token!(countersigned_token, context = nil)
       # 5. Validate the the issuer field is present in the token,
       # and that it matches the audience field in the original countersigned token.
       begin
@@ -93,7 +97,7 @@ module Darrrr
       # 7. Retrieve the current Recovery Provider configuration as described in Section 2.
       # 8. Validate that the counter-signed token signature validates with a current element of the countersign-pubkeys-secp256r1 array.
       begin
-        parsed_countersigned_token = recovery_provider.unseal(Base64.strict_decode64(countersigned_token))
+        parsed_countersigned_token = recovery_provider.unseal(Base64.strict_decode64(countersigned_token), context)
       rescue TokenFormatError => e
         raise CountersignedTokenError.new(e.message, :countersigned_invalid_token_version)
       rescue CryptoError
@@ -103,7 +107,7 @@ module Darrrr
       # 3. De-serialize the original recovery token from the data field.
       # 4. Validate the signature on the original recovery token.
       begin
-        recovery_token = self.unseal(parsed_countersigned_token.data)
+        recovery_token = self.unseal(parsed_countersigned_token.data, context)
       rescue RecoveryTokenSerializationError => e
         raise CountersignedTokenError.new("Nested recovery token is invalid: " + e.message, :recovery_token_token_parse_error)
       rescue TokenFormatError => e
