@@ -34,7 +34,7 @@ module Darrrr
       end
 
       token_data, signature = partition_signed_token(token_and_signature, token)
-      self.unseal_keys.each do |key|
+      self.unseal_keys(context).each do |key|
         return token if Darrrr.encryptor.verify(token_data, signature, key, self, context)
       end
       raise CryptoError, "Recovery token signature was invalid"

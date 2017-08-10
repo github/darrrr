@@ -64,8 +64,11 @@ describe Darrrr, vcr: { :cassette_name => "delegated_account_recovery/recovery_p
 
   it "passes context from high level operations to low level crypto calls when verifying/countersigning a token" do
     context = { foo: :bar }
+
     token, sealed_token = Darrrr.this_account_provider.generate_recovery_token(data: "foo", audience: Darrrr.this_recovery_provider)
     sealed_token = Base64.strict_decode64(sealed_token)
+
+    expect(Darrrr.this_account_provider).to receive(:unseal_keys).with(context).and_return(["bar"])
 
     expect(Darrrr.encryptor).to receive(:verify).with(anything, anything, anything, anything, context).and_return(true)
     Darrrr.this_recovery_provider.validate_recovery_token!(sealed_token, context)
@@ -80,6 +83,7 @@ describe Darrrr, vcr: { :cassette_name => "delegated_account_recovery/recovery_p
     sealed_token = Base64.strict_decode64(sealed_token)
     countersigned_token = Darrrr.this_recovery_provider.countersign_token(sealed_token, context)
 
+    expect(Darrrr.this_account_provider).to receive(:unseal_keys).with(context).and_return(["bar"])
     expect(Darrrr.encryptor).to receive(:verify).with(anything, anything, anything, anything, context).and_return(true).twice
     Darrrr.this_account_provider.validate_countersigned_recovery_token!(countersigned_token, context)
   end

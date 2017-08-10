@@ -69,7 +69,10 @@ module Darrrr
       unless self.recovery_providers
         raise "No recovery providers configured"
       end
-      if self.recovery_providers.include?(provider_origin)
+
+      if provider_origin == this_recovery_provider.origin
+        this_recovery_provider
+      elsif self.recovery_providers.include?(provider_origin)
         RecoveryProvider.new(provider_origin).load
       else
         raise UnknownProviderError, "Unknown recovery provider: #{provider_origin}"
@@ -92,7 +95,9 @@ module Darrrr
       unless self.account_providers
         raise "No account providers configured"
       end
-      if self.account_providers.include?(provider_origin)
+      if provider_origin == this_account_provider.origin
+        this_account_provider
+      elsif self.account_providers.include?(provider_origin)
         AccountProvider.new(provider_origin).load
       else
         raise UnknownProviderError, "Unknown account provider: #{provider_origin}"
