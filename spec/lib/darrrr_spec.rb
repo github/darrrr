@@ -85,19 +85,19 @@ describe Darrrr, vcr: { :cassette_name => "delegated_account_recovery/recovery_p
           string.tr("A-Za-z", "N-ZA-Mn-za-m")
         end
 
-        def sign(serialized_token, key, provider)
+        def sign(serialized_token, key)
           "abc123"
         end
 
-        def verify(payload, signature, key, provider)
+        def verify(payload, signature, key)
           signature == "abc123"
         end
 
-        def decrypt(encrypted_data, provider)
+        def decrypt(encrypted_data)
           rot13(encrypted_data)
         end
 
-        def encrypt(data, provider)
+        def encrypt(data)
           rot13(data)
         end
       end

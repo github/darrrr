@@ -24,7 +24,7 @@ module Darrrr
     private_class_method :new
 
     def decode
-      Darrrr.encryptor.decrypt(self.data, Darrrr.account_provider(self.issuer))
+      Darrrr.encryptor.decrypt(self.data)
     end
 
     # A globally known location of the token, used to initiate a recovery
