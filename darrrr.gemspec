@@ -3,6 +3,7 @@
 Gem::Specification.new do |gem|
   gem.name    = "darrrr"
   gem.version = "0.0.3"
+  gem.licenses = ['MIT']
 
   gem.summary = "Client library for the Delegated Recovery spec"
   gem.description = "See https://www.facebook.com/notes/protect-the-graph/improving-account-security-with-delegated-recovery/1833022090271267/"
