@@ -56,7 +56,6 @@ module Darrrr
   include Constants
 
   class << self
-    REQUIRED_CRYPTO_OPS = [:sign, :verify, :encrypt, :decrypt].freeze
     # recovery provider data is only loaded (and cached) upon use.
     attr_accessor :recovery_providers, :account_providers, :cache, :allow_unsafe_urls,
       :privacy_policy, :icon_152px, :authority
@@ -147,39 +146,6 @@ module Darrrr
     # returns the account provider information in hash form
     def recovery_provider_config
       this_recovery_provider.to_h
-    end
-
-    def with_encryptor(encryptor)
-      raise ArgumentError, "A block must be supplied" unless block_given?
-      unless valid_encryptor?(encryptor)
-        raise ArgumentError, "custom encryption class must respond to all of #{REQUIRED_CRYPTO_OPS}"
-      end
-
-      Thread.current[:darrrr_encryptor] = encryptor
-      yield
-    ensure
-      Thread.current[:darrrr_encryptor] = nil
-    end
-
-    # Returns the crypto API to be used. A thread local instance overrides the
-    # globally configured value which overrides the default encryptor.
-    def encryptor
-      Thread.current[:darrrr_encryptor] || @encryptor || DefaultEncryptor
-    end
-
-    # Overrides the global `encryptor` API to use
-    #
-    # encryptor: a class/module that responds to all +REQUIRED_CRYPTO_OPS+.
-    def custom_encryptor=(encryptor)
-      if valid_encryptor?(encryptor)
-        @encryptor = encryptor
-      else
-        raise ArgumentError, "custom encryption class must respond to all of #{REQUIRED_CRYPTO_OPS}"
-      end
-    end
-
-    private def valid_encryptor?(encryptor)
-      REQUIRED_CRYPTO_OPS.all? {|m| encryptor.respond_to?(m)}
     end
   end
 end

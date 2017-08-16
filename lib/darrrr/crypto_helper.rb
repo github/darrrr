@@ -12,7 +12,7 @@ module Darrrr
     def seal(token, context = nil)
       raise RuntimeError, "signing private key must be set" unless self.instance_variable_get(:@signing_private_key)
       binary_token = token.to_binary_s
-      signature = Darrrr.encryptor.sign(binary_token, self.instance_variable_get(:@signing_private_key), self, context)
+      signature = self.encryptor.sign(binary_token, self.instance_variable_get(:@signing_private_key), self, context)
       Base64.strict_encode64([binary_token, signature].join)
     end
 
@@ -35,7 +35,7 @@ module Darrrr
 
       token_data, signature = partition_signed_token(token_and_signature, token)
       self.unseal_keys(context).each do |key|
-        return token if Darrrr.encryptor.verify(token_data, signature, key, self, context)
+        return token if self.encryptor.verify(token_data, signature, key, self, context)
       end
       raise CryptoError, "Recovery token signature was invalid"
     end

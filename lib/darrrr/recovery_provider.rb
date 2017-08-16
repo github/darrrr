@@ -57,6 +57,10 @@ module Darrrr
       [self.recover_account, "?token_id=", URI.escape(token_id)].join
     end
 
+    def encryptor_key
+      :darrrr_recovery_provider_encryptor
+    end
+
     # Takes a binary representation of a token and signs if for a given
     # account provider. Do not pass in a RecoveryToken object. The wrapping
     # data structure is identical to the structure it's wrapping in format.

@@ -57,8 +57,8 @@ describe Darrrr, vcr: { :cassette_name => "delegated_account_recovery/recovery_p
 
   it "passes context from high level operations to low level crypto calls when creating a token " do
     context = { foo: :bar }
-    expect(Darrrr.encryptor).to receive(:encrypt).with(anything, Darrrr.this_account_provider, context).and_return("crypted")
-    expect(Darrrr.encryptor).to receive(:sign).with(anything, anything, Darrrr.this_account_provider, context).and_return("signed")
+    expect(Darrrr.this_account_provider.encryptor).to receive(:encrypt).with(anything, Darrrr.this_account_provider, context).and_return("crypted")
+    expect(Darrrr.this_account_provider.encryptor).to receive(:sign).with(anything, anything, Darrrr.this_account_provider, context).and_return("signed")
     Darrrr.this_account_provider.generate_recovery_token(data: "plaintext", audience: Darrrr.this_recovery_provider, context: context)
   end
 
@@ -70,10 +70,10 @@ describe Darrrr, vcr: { :cassette_name => "delegated_account_recovery/recovery_p
 
     expect(Darrrr.this_account_provider).to receive(:unseal_keys).with(context).and_return(["bar"])
 
-    expect(Darrrr.encryptor).to receive(:verify).with(anything, anything, anything, anything, context).and_return(true)
+    expect(Darrrr.this_account_provider.encryptor).to receive(:verify).with(anything, anything, anything, anything, context).and_return(true)
     Darrrr.this_recovery_provider.validate_recovery_token!(sealed_token, context)
 
-    expect(Darrrr.encryptor).to receive(:sign).with(anything, anything, anything, context).and_return("signed")
+    expect(Darrrr.this_recovery_provider.encryptor).to receive(:sign).with(anything, anything, anything, context).and_return("signed")
     Darrrr.this_recovery_provider.countersign_token(sealed_token, context)
   end
 
@@ -84,7 +84,8 @@ describe Darrrr, vcr: { :cassette_name => "delegated_account_recovery/recovery_p
     countersigned_token = Darrrr.this_recovery_provider.countersign_token(sealed_token, context)
 
     expect(Darrrr.this_account_provider).to receive(:unseal_keys).with(context).and_return(["bar"])
-    expect(Darrrr.encryptor).to receive(:verify).with(anything, anything, anything, anything, context).and_return(true).twice
+    expect(Darrrr.this_account_provider.encryptor).to receive(:verify).with(anything, anything, anything, anything, context).and_return(true)
+    expect(Darrrr.this_recovery_provider.encryptor).to receive(:verify).with(anything, anything, anything, anything, context).and_return(true)
     Darrrr.this_account_provider.validate_countersigned_recovery_token!(countersigned_token, context)
   end
 
@@ -142,13 +143,14 @@ describe Darrrr, vcr: { :cassette_name => "delegated_account_recovery/recovery_p
 
     it "rejects classes that don't define all operations" do
       expect {
-        Darrrr.custom_encryptor = BadEncryptor
+        account_provider.custom_encryptor = BadEncryptor
       }.to raise_error(ArgumentError)
     end
 
     it "accepts classes that define all operations" do
       begin
-        Darrrr.custom_encryptor = Rot13Encryptor
+        account_provider.custom_encryptor = Rot13Encryptor
+        recovery_provider.custom_encryptor = Rot13Encryptor
 
         token, sealed_token = account_provider.generate_recovery_token(data: "foo", audience: recovery_provider)
         sealed_token = Base64.strict_decode64(sealed_token)
@@ -161,28 +163,33 @@ describe Darrrr, vcr: { :cassette_name => "delegated_account_recovery/recovery_p
         recovery_token = account_provider.unseal(unsealed_countersigned_token.data.to_binary_s)
         expect(recovery_token.decode).to eq("foo")
       ensure
-        Darrrr.instance_variable_set(:@encryptor, nil)
+        account_provider.instance_variable_set(:@encryptor, nil)
+        recovery_provider.instance_variable_set(:@encryptor, nil)
       end
     end
 
     it "allows you to specify a temporary using a block" do
-      expect(Darrrr.encryptor).to be(Darrrr::DefaultEncryptor)
+      expect(account_provider.encryptor).to be(Darrrr::DefaultEncryptor)
 
-      Darrrr.with_encryptor(Rot13Encryptor) do
-        expect(Darrrr.encryptor).to be(Rot13Encryptor)
-        token, sealed_token = account_provider.generate_recovery_token(data: "foo", audience: recovery_provider)
-        sealed_token = Base64.strict_decode64(sealed_token)
-        recovery_provider.validate_recovery_token!(sealed_token)
+      account_provider.with_encryptor(Rot13Encryptor) do
+        recovery_provider.with_encryptor(Rot13Encryptor) do
+          expect(account_provider.encryptor).to be(Rot13Encryptor)
+          expect(recovery_provider.encryptor).to be(Rot13Encryptor)
+          token, sealed_token = account_provider.generate_recovery_token(data: "foo", audience: recovery_provider)
+          sealed_token = Base64.strict_decode64(sealed_token)
+          recovery_provider.validate_recovery_token!(sealed_token)
 
-        countersigned_token = recovery_provider.countersign_token(sealed_token)
-        account_provider.validate_countersigned_recovery_token!(countersigned_token)
+          countersigned_token = recovery_provider.countersign_token(sealed_token)
+          account_provider.validate_countersigned_recovery_token!(countersigned_token)
 
-        unsealed_countersigned_token = recovery_provider.unseal(Base64.strict_decode64(countersigned_token))
-        recovery_token = account_provider.unseal(unsealed_countersigned_token.data.to_binary_s)
-        expect(recovery_token.decode).to eq("foo")
+          unsealed_countersigned_token = recovery_provider.unseal(Base64.strict_decode64(countersigned_token))
+          recovery_token = account_provider.unseal(unsealed_countersigned_token.data.to_binary_s)
+          expect(recovery_token.decode).to eq("foo")
+        end
       end
 
-      expect(Darrrr.encryptor).to be(Darrrr::DefaultEncryptor)
+      expect(account_provider.encryptor).to be(Darrrr::DefaultEncryptor)
+      expect(recovery_provider.encryptor).to be(Darrrr::DefaultEncryptor)
     end
   end
 end

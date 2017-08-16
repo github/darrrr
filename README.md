@@ -65,7 +65,8 @@ Create a module that responds to `Module.sign`, `Module.verify`, `Module.decrypt
 
 ### Global config
 
-Set `Darrrr.custom_encryptor = MyCustomEncryptor`
+Set `Darrrr.this_account_provider.custom_encryptor = MyCustomEncryptor`
+Set `Darrrr.this_recovery_provider.custom_encryptor = MyCustomEncryptor`
 
 ### On-demand
 

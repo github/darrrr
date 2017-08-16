@@ -57,7 +57,7 @@ module Darrrr
     # returns a [RecoveryToken, b64 encoded sealed_token] tuple
     def generate_recovery_token(data:, audience:, context: nil)
       token = RecoveryToken.build(issuer: self, audience: audience, type: RECOVERY_TOKEN_TYPE)
-      token.data = Darrrr.encryptor.encrypt(data, self, context)
+      token.data = self.encryptor.encrypt(data, self, context)
 
       [token, seal(token, context)]
     end
@@ -68,6 +68,10 @@ module Darrrr
     def dangerous_unverified_recovery_token(countersigned_token)
       parsed_countersigned_token = RecoveryToken.parse(Base64.strict_decode64(countersigned_token))
       RecoveryToken.parse(parsed_countersigned_token.data)
+    end
+
+    def encryptor_key
+      :darrrr_account_provider_encryptor
     end
 
     # Validates the countersigned recovery token by verifying the signature
