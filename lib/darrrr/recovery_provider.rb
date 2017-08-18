@@ -44,7 +44,7 @@ module Darrrr
     # passing `self` as the first argument.
     def unseal_keys(context = nil)
       if @countersign_pubkeys_secp256r1.respond_to?(:call)
-        @countersign_pubkeys_secp256r1.call(self, context)
+        @countersign_pubkeys_secp256r1.call(context)
       else
         @countersign_pubkeys_secp256r1
       end

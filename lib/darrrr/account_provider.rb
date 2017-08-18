@@ -30,7 +30,7 @@ module Darrrr
     # passing `self` as the first argument.
     def unseal_keys(context = nil)
       if @tokensign_pubkeys_secp256r1.respond_to?(:call)
-        @tokensign_pubkeys_secp256r1.call(self, context)
+        @tokensign_pubkeys_secp256r1.call(context)
       else
         @tokensign_pubkeys_secp256r1
       end
