@@ -85,7 +85,7 @@ module Darrrr
     #
     # returns a verified recovery token or raises
     # an error if the token fails validation.
-    def validate_countersigned_recovery_token!(countersigned_token, context = nil)
+    def validate_countersigned_recovery_token!(countersigned_token, context = {})
       # 5. Validate the the issuer field is present in the token,
       # and that it matches the audience field in the original countersigned token.
       begin

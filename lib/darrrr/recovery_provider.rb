@@ -90,7 +90,7 @@ module Darrrr
     # save-token endpoint.
     #
     # Returns a validated token
-    def validate_recovery_token!(token, context = nil)
+    def validate_recovery_token!(token, context = {})
       errors = []
 
       # 1. Authenticate the User. The exact nature of how the Recovery Provider authenticates the User is beyond the scope of this specification.
