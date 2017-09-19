@@ -9,10 +9,10 @@ module Darrrr
     #
     # returns a base64 value for the binary token string and the signature
     # of the token.
-    def seal(token)
-      raise RuntimeError, "signing private key must be set" unless self.signing_private_key
+    def seal(token, context = nil)
+      raise RuntimeError, "signing private key must be set" unless self.instance_variable_get(:@signing_private_key)
       binary_token = token.to_binary_s
-      signature = Darrrr.encryptor.sign(binary_token, self.signing_private_key)
+      signature = self.encryptor.sign(binary_token, self.instance_variable_get(:@signing_private_key), self, context)
       Base64.strict_encode64([binary_token, signature].join)
     end
 
@@ -26,7 +26,7 @@ module Darrrr
     # returns a RecoveryToken if the payload has been verified and
     # deserializes correctly. Raises exceptions if any crypto fails.
     # Raises an error if the token's version field is not valid.
-    def unseal(token_and_signature)
+    def unseal(token_and_signature, context = nil)
       token = RecoveryToken.parse(token_and_signature)
 
       unless token.version.to_i == PROTOCOL_VERSION
@@ -34,8 +34,8 @@ module Darrrr
       end
 
       token_data, signature = partition_signed_token(token_and_signature, token)
-      self.unseal_keys.each do |key|
-        return token if Darrrr.encryptor.verify(token_data, signature, key)
+      self.unseal_keys(context).each do |key|
+        return token if self.encryptor.verify(token_data, signature, key, self, context)
       end
       raise CryptoError, "Recovery token signature was invalid"
     end

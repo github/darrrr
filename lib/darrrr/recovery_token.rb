@@ -2,7 +2,7 @@
 
 # Handles binary serialization/deserialization of recovery token data. It does
 # not manage signing/verification of tokens.
-
+# Only account providers will ever call the decode function
 module Darrrr
   class RecoveryToken
     extend Forwardable
@@ -23,8 +23,8 @@ module Darrrr
     end
     private_class_method :new
 
-    def decode
-      Darrrr.encryptor.decrypt(self.data)
+    def decode(context = nil)
+      Darrrr.this_account_provider.encryptor.decrypt(self.data, Darrrr.this_account_provider, context)
     end
 
     # A globally known location of the token, used to initiate a recovery
@@ -41,7 +41,7 @@ module Darrrr
       # returns a RecoveryToken.
       def build(issuer:, audience:, type:)
         token = RecoveryTokenWriter.new.tap do |token|
-          token.token_id = SecureRandom.random_bytes(16).bytes.to_a
+          token.token_id = token_id
           token.issuer = issuer.origin
           token.issued_time = Time.now.utc.iso8601
           token.options = 0 # when the token-status endpoint is implemented, change this to 1
@@ -50,6 +50,12 @@ module Darrrr
           token.token_type = type
         end
         new(token)
+      end
+
+      # token ID generates a random array of bytes.
+      # this method only exists so that it can be stubbed.
+      def token_id
+        SecureRandom.random_bytes(16).bytes.to_a
       end
 
       # serialized_data: a binary string representation of a RecoveryToken.

@@ -19,24 +19,25 @@ require_relative "darrrr/cryptors/default/encrypted_data"
 require_relative "darrrr/cryptors/default/encrypted_data_io"
 
 module Darrrr
+  class DelegatedRecoveryError < StandardError; end
   # Represents a binary serialization error
-  class RecoveryTokenSerializationError < StandardError; end
+  class RecoveryTokenSerializationError < DelegatedRecoveryError; end
 
   # Represents invalid data within a valid token
   #  (e.g. wrong `version` number, invalid token `type`)
-  class TokenFormatError < StandardError; end
+  class TokenFormatError < DelegatedRecoveryError; end
 
   # Represents all crypto errors
   #   (e.g. invalid keys, invalid signature, decrypt failures)
-  class CryptoError < StandardError; end
+  class CryptoError < DelegatedRecoveryError; end
 
   # Represents providers supplying invalid configurations
   #  (e.g. non-https URLs, missing required fields, http errors)
-  class ProviderConfigError < StandardError; end
+  class ProviderConfigError < DelegatedRecoveryError; end
 
   # Represents an invalid countersigned recovery token.
   #  (e.g. invalid signature, invalid nested token, unregistered provider, stale tokens)
-  class CountersignedTokenError < StandardError
+  class CountersignedTokenError < DelegatedRecoveryError
     attr_reader :key
     def initialize(message, key)
       super(message)
@@ -46,16 +47,15 @@ module Darrrr
 
   # Represents an invalid recovery token.
   #  (e.g. invalid signature, unregistered provider, stale tokens)
-  class RecoveryTokenError < StandardError; end
+  class RecoveryTokenError < DelegatedRecoveryError; end
 
   # Represents a call to to `recovery_provider` or `account_provider` that
   # has not been registered.
-  class UnknownProviderError < ArgumentError; end
+  class UnknownProviderError < DelegatedRecoveryError; end
 
   include Constants
 
   class << self
-    REQUIRED_CRYPTO_OPS = [:sign, :verify, :encrypt, :decrypt].freeze
     # recovery provider data is only loaded (and cached) upon use.
     attr_accessor :recovery_providers, :account_providers, :cache, :allow_unsafe_urls,
       :privacy_policy, :icon_152px, :authority
@@ -68,7 +68,10 @@ module Darrrr
       unless self.recovery_providers
         raise "No recovery providers configured"
       end
-      if self.recovery_providers.include?(provider_origin)
+
+      if provider_origin == this_recovery_provider.origin
+        this_recovery_provider
+      elsif self.recovery_providers.include?(provider_origin)
         RecoveryProvider.new(provider_origin).load
       else
         raise UnknownProviderError, "Unknown recovery provider: #{provider_origin}"
@@ -91,7 +94,9 @@ module Darrrr
       unless self.account_providers
         raise "No account providers configured"
       end
-      if self.account_providers.include?(provider_origin)
+      if provider_origin == this_account_provider.origin
+        this_account_provider
+      elsif self.account_providers.include?(provider_origin)
         AccountProvider.new(provider_origin).load
       else
         raise UnknownProviderError, "Unknown account provider: #{provider_origin}"
@@ -141,39 +146,6 @@ module Darrrr
     # returns the account provider information in hash form
     def recovery_provider_config
       this_recovery_provider.to_h
-    end
-
-    def with_encryptor(encryptor)
-      raise ArgumentError, "A block must be supplied" unless block_given?
-      unless valid_encryptor?(encryptor)
-        raise ArgumentError, "custom encryption class must respond to all of #{REQUIRED_CRYPTO_OPS}"
-      end
-
-      Thread.current[:darrrr_encryptor] = encryptor
-      yield
-    ensure
-      Thread.current[:darrrr_encryptor] = nil
-    end
-
-    # Returns the crypto API to be used. A thread local instance overrides the
-    # globally configured value which overrides the default encryptor.
-    def encryptor
-      Thread.current[:darrrr_encryptor] || @encryptor || DefaultEncryptor
-    end
-
-    # Overrides the global `encryptor` API to use
-    #
-    # encryptor: a class/module that responds to all +REQUIRED_CRYPTO_OPS+.
-    def custom_encryptor=(encryptor)
-      if valid_encryptor?(encryptor)
-        @encryptor = encryptor
-      else
-        raise ArgumentError, "custom encryption class must respond to all of #{REQUIRED_CRYPTO_OPS}"
-      end
-    end
-
-    private def valid_encryptor?(encryptor)
-      REQUIRED_CRYPTO_OPS.all? {|m| encryptor.respond_to?(m)}
     end
   end
 end

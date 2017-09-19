@@ -4,6 +4,7 @@ module Darrrr
   module Provider
     RECOVERY_PROVIDER_CACHE_LENGTH = 60.seconds
     MAX_RECOVERY_PROVIDER_CACHE_LENGTH = 5.minutes
+    REQUIRED_CRYPTO_OPS = [:sign, :verify, :encrypt, :decrypt].freeze
     include Constants
 
     def self.included(base)
@@ -27,6 +28,39 @@ module Darrrr
     def initialize(provider_origin = nil, attrs: nil)
       self.issuer = provider_origin
       load(attrs) if attrs
+    end
+
+    # Returns the crypto API to be used. A thread local instance overrides the
+    # globally configured value which overrides the default encryptor.
+    def encryptor
+      Thread.current[encryptor_key()] || @encryptor || DefaultEncryptor
+    end
+
+    # Overrides the global `encryptor` API to use
+    #
+    # encryptor: a class/module that responds to all +REQUIRED_CRYPTO_OPS+.
+    def custom_encryptor=(encryptor)
+      if valid_encryptor?(encryptor)
+        @encryptor = encryptor
+      else
+        raise ArgumentError, "custom encryption class must respond to all of #{REQUIRED_CRYPTO_OPS}"
+      end
+    end
+
+    def with_encryptor(encryptor)
+      raise ArgumentError, "A block must be supplied" unless block_given?
+      unless valid_encryptor?(encryptor)
+        raise ArgumentError, "custom encryption class must respond to all of #{REQUIRED_CRYPTO_OPS}"
+      end
+
+      Thread.current[encryptor_key()] = encryptor
+      yield
+    ensure
+      Thread.current[encryptor_key()] = nil
+    end
+
+    private def valid_encryptor?(encryptor)
+      REQUIRED_CRYPTO_OPS.all? {|m| encryptor.respond_to?(m)}
     end
 
     # Lazily loads attributes if attrs is nil. It makes an http call to the

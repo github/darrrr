@@ -6,7 +6,7 @@ module Darrrr
   describe RecoveryToken, vcr: { :cassette_name => "delegated_account_recovery/recovery_provider" } do
     let(:binding) { SecureRandom.hex }
     let(:recovery_provider) { example_account_provider }
-    let(:token) { AccountProvider.this.generate_recovery_token(data: "hai", audience: recovery_provider) }
+    let(:token) { AccountProvider.this.generate_recovery_token(data: "hai", audience: recovery_provider).first }
 
     it "can generate and parse a token" do
       parsed_token = RecoveryToken.parse(token.to_binary_s)

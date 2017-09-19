@@ -16,7 +16,7 @@ module Darrrr
       data.token_object.version = 100
       expect {
         EncryptedData.parse(data.to_binary_s)
-      }.to raise_error(ArgumentError)
+      }.to raise_error(TokenFormatError)
     end
 
     it "rejects tokens with an invalid auth_tag" do

@@ -19,9 +19,9 @@ module Darrrr
     # token_object: an EncryptedDataIO instance
     # instance.
     def initialize(token_object)
-      raise ArgumentError, "Version must be #{PROTOCOL_VERSION}. Supplied: #{token_object.version}" unless token_object.version == CIPHER_VERSION
-      raise ArgumentError, "Auth Tag must be 16 bytes" unless token_object.auth_tag.length == AUTH_TAG_LENGTH
-      raise ArgumentError, "IV must be 12 bytes" unless token_object.iv.length == IV_LENGTH
+      raise TokenFormatError, "Version must be #{PROTOCOL_VERSION}. Supplied: #{token_object.version}" unless token_object.version == CIPHER_VERSION
+      raise TokenFormatError, "Auth Tag must be 16 bytes" unless token_object.auth_tag.length == AUTH_TAG_LENGTH
+      raise TokenFormatError, "IV must be 12 bytes" unless token_object.iv.length == IV_LENGTH
       @token_object = token_object
     end
     private_class_method :new
@@ -82,7 +82,7 @@ module Darrrr
 
         OpenSSL::Cipher.new(EncryptedData::CIPHER).tap do |cipher|
           cipher.send(mode)
-          cipher.key = [Darrrr.this_account_provider.symmetric_key].pack("H*")
+          cipher.key = [Darrrr.this_account_provider.instance_variable_get(:@symmetric_key)].pack("H*")
         end
       end
     end

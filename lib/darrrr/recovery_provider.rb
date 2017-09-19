@@ -13,9 +13,11 @@ module Darrrr
     ]
     REQUIRED_FIELDS = URL_FIELDS + INTEGER_FIELDS + BASE64_FIELDS
 
-    attr_accessor(*REQUIRED_FIELDS)
+    attr_reader *(REQUIRED_FIELDS - [:countersign_pubkeys_secp256r1])
+    attr_writer *REQUIRED_FIELDS
+    attr_writer :signing_private_key, :token_max_size
     attr_accessor :save_token_async_api_iframe # optional
-    attr_accessor :signing_private_key
+
     alias :origin :issuer
 
     # optional field
@@ -25,7 +27,7 @@ module Darrrr
     def to_h
       {
         "issuer" => self.issuer,
-        "countersign-pubkeys-secp256r1" => self.countersign_pubkeys_secp256r1.dup,
+        "countersign-pubkeys-secp256r1" => self.unseal_keys.dup,
         "token-max-size" => self.token_max_size,
         "save-token" => self.save_token,
         "recover-account" => self.recover_account,
@@ -37,8 +39,15 @@ module Darrrr
     # The CryptoHelper defines an `unseal` method that requires us to define
     # a `unseal_keys` method that will return the set of keys that are valid
     # when verifying the signature on a sealed key.
-    def unseal_keys
-      countersign_pubkeys_secp256r1
+    #
+    # returns the value of `countersign_pubkeys_secp256r1` or executes a proc
+    # passing `self` as the first argument.
+    def unseal_keys(context = nil)
+      if @countersign_pubkeys_secp256r1.respond_to?(:call)
+        @countersign_pubkeys_secp256r1.call(context)
+      else
+        @countersign_pubkeys_secp256r1
+      end
     end
 
     # The URL representing the location of the token. Used to initiate a recovery.
@@ -46,6 +55,10 @@ module Darrrr
     # token_id: the shared ID representing a token.
     def recovery_url(token_id)
       [self.recover_account, "?token_id=", URI.escape(token_id)].join
+    end
+
+    def encryptor_key
+      :darrrr_recovery_provider_encryptor
     end
 
     # Takes a binary representation of a token and signs if for a given
@@ -56,7 +69,7 @@ module Darrrr
     #
     # returns a Base64 encoded representation of the countersigned token
     # and the signature over the token.
-    def countersign_token(token)
+    def countersign_token(token, context = nil)
       begin
         account_provider = RecoveryToken.account_provider_issuer(token)
       rescue RecoveryTokenSerializationError, UnknownProviderError
@@ -70,14 +83,14 @@ module Darrrr
       )
 
       counter_recovery_token.data = token
-      seal(counter_recovery_token)
+      seal(counter_recovery_token, context)
     end
 
     # Validate the token according to the processing instructions for the
     # save-token endpoint.
     #
     # Returns a validated token
-    def validate_recovery_token!(token)
+    def validate_recovery_token!(token, context = {})
       errors = []
 
       # 1. Authenticate the User. The exact nature of how the Recovery Provider authenticates the User is beyond the scope of this specification.
@@ -94,7 +107,7 @@ module Darrrr
       # 3. Validate that the version value is 0.
       # 5. Validate the signature over the token according to processing rules for the algorithm implied by the version.
       begin
-        recovery_token = account_provider.unseal(token)
+        recovery_token = account_provider.unseal(token, context)
       rescue CryptoError => e
         raise RecoveryTokenError.new("Unable to verify signature of token")
       rescue TokenFormatError => e
