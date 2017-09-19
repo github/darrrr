@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    darrrr (0.0.3)
+    darrrr (0.1.0)
       addressable
       bindata
       faraday

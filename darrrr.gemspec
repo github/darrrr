@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |gem|
   gem.name    = "darrrr"
-  gem.version = "0.0.3"
+  gem.version = "0.1.0"
   gem.licenses = ['MIT']
 
   gem.summary = "Client library for the Delegated Recovery spec"
