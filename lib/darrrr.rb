@@ -69,7 +69,7 @@ module Darrrr
         raise "No recovery providers configured"
       end
 
-      if provider_origin == this_recovery_provider.origin
+      if provider_origin == this_recovery_provider&.origin
         this_recovery_provider
       elsif self.recovery_providers.include?(provider_origin)
         RecoveryProvider.new(provider_origin).load
@@ -94,7 +94,7 @@ module Darrrr
       unless self.account_providers
         raise "No account providers configured"
       end
-      if provider_origin == this_account_provider.origin
+      if provider_origin == this_account_provider&.origin
         this_account_provider
       elsif self.account_providers.include?(provider_origin)
         AccountProvider.new(provider_origin).load
@@ -123,7 +123,7 @@ module Darrrr
 
     # Returns a hash of all configuration values, recovery and account provider.
     def account_and_recovery_provider_config
-      provider_data = Darrrr.this_account_provider.try(:to_h) || {}
+      provider_data = Darrrr.this_account_provider&.to_h || {}
 
       if Darrrr.this_recovery_provider
         provider_data.merge!(recovery_provider_config) do |key, lhs, rhs|
@@ -140,12 +140,12 @@ module Darrrr
 
     # returns the account provider information in hash form
     def account_provider_config
-      this_account_provider.to_h
+      this_account_provider&.to_h
     end
 
     # returns the account provider information in hash form
     def recovery_provider_config
-      this_recovery_provider.to_h
+      this_recovery_provider&.to_h
     end
   end
 end
