@@ -10,7 +10,8 @@ module Darrrr
     attr_reader :token_object
 
     def_delegators :@token_object, :token_id, :issuer, :issued_time, :options,
-      :audience, :binding_data, :data, :version, :to_binary_s, :num_bytes, :data=, :token_type=, :token_type
+      :audience, :binding_data, :data, :version, :to_binary_s, :num_bytes,
+      :data=, :token_type=, :token_type, :options=
 
     BASE64_CHARACTERS = /\A[0-9a-zA-Z+\/=]+\z/
 
