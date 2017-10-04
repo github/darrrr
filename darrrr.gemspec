@@ -22,7 +22,6 @@ Gem::Specification.new do |gem|
   gem.add_dependency("bindata")
   gem.add_dependency("faraday")
   gem.add_dependency("addressable")
-  gem.add_dependency("multi_json")
 
   gem.files = Dir["Rakefile", "{lib}/**/*", "README*", "LICENSE*"] & `git ls-files -z`.split("\0")
 end
