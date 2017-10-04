@@ -1,11 +1,10 @@
 PATH
   remote: .
   specs:
-    darrrr (0.1.1)
+    darrrr (0.1.2)
       addressable
       bindata
       faraday
-      multi_json
       rake
 
 GEM
