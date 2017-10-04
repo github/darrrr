@@ -89,6 +89,10 @@ describe Darrrr, vcr: { :cassette_name => "delegated_account_recovery/recovery_p
     Darrrr.this_account_provider.validate_countersigned_recovery_token!(countersigned_token, context)
   end
 
+  it "allows you to set the options value for a token" do
+    token, _ = Darrrr.this_account_provider.generate_recovery_token(data: "foo", audience: Darrrr.this_recovery_provider, options: 0x02)
+    expect(token.options).to eq(0x02)
+  end
 
   context "#account_provider_config" do
     it "returns a hash" do
