@@ -131,10 +131,17 @@ module Darrrr
 
     it "countersigns tokens" do
       sealed_token = Base64.strict_decode64(account_provider.send(:seal, token))
-      countersigned_token = recovery_provider.countersign_token(sealed_token)
+      countersigned_token = recovery_provider.countersign_token(token: sealed_token)
       raw_counter_token = recovery_provider.unseal(Base64.strict_decode64(countersigned_token))
       expect(sealed_token).to eq(raw_counter_token.data.to_binary_s)
       expect(account_provider.unseal(raw_counter_token.data.to_binary_s)).to_not be_nil
+    end
+
+    it "sets the option value when countersigning tokens" do
+      sealed_token = Base64.strict_decode64(account_provider.send(:seal, token))
+      countersigned_token = recovery_provider.countersign_token(token: sealed_token, options: 0x02)
+      raw_counter_token = recovery_provider.unseal(Base64.strict_decode64(countersigned_token))
+      expect(raw_counter_token.options).to eq(0x02)
     end
 
     it "countersigned tokens can be unsealed when there are multiple unseal keys" do
@@ -142,7 +149,7 @@ module Darrrr
         [recovery_provider.unseal_keys[0], unused_unseal_key]
       )
       sealed_token = Base64.strict_decode64(account_provider.send(:seal, token))
-      countersigned_token = recovery_provider.countersign_token(sealed_token)
+      countersigned_token = recovery_provider.countersign_token(token: sealed_token)
       raw_counter_token = recovery_provider.unseal(Base64.strict_decode64(countersigned_token))
       expect(sealed_token).to eq(raw_counter_token.data.to_binary_s)
       expect(account_provider.unseal(sealed_token)).to_not be_nil
@@ -154,7 +161,7 @@ module Darrrr
         [unused_unseal_key, recovery_provider.unseal_keys[0]]
       )
       sealed_token = Base64.strict_decode64(account_provider.send(:seal, token))
-      countersigned_token = recovery_provider.countersign_token(sealed_token)
+      countersigned_token = recovery_provider.countersign_token(token: sealed_token)
       raw_counter_token = recovery_provider.unseal(Base64.strict_decode64(countersigned_token))
       expect(sealed_token).to eq(raw_counter_token.data.to_binary_s)
       expect(account_provider.unseal(sealed_token)).to_not be_nil
@@ -163,7 +170,7 @@ module Darrrr
     it "doesn't countersign tokens it can't parse" do
       sealed_token = Base64.strict_decode64(account_provider.send(:seal, token)).reverse
       expect {
-        recovery_provider.countersign_token(sealed_token)
+        recovery_provider.countersign_token(token: sealed_token)
       }.to raise_error(TokenFormatError)
     end
 
@@ -172,7 +179,7 @@ module Darrrr
         [unused_unseal_key]
       )
       sealed_token = Base64.strict_decode64(account_provider.send(:seal, token))
-      countersigned_token = recovery_provider.countersign_token(sealed_token)
+      countersigned_token = recovery_provider.countersign_token(token: sealed_token)
       expect {
         recovery_provider.unseal(Base64.strict_decode64(countersigned_token))
       }.to raise_error(CryptoError)

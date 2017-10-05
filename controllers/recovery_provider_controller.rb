@@ -28,7 +28,7 @@ class RecoveryProviderController < MainController
     token = Base64.strict_decode64(RecoveryToken.find_by_token_id(params[:token_id] || params[:id]).token_blob)
 
     account_provider = Darrrr::RecoveryToken.account_provider_issuer(token)
-    countersigned_recovery_token = Darrrr.this_recovery_provider.countersign_token(token)
+    countersigned_recovery_token = Darrrr.this_recovery_provider.countersign_token(token: token)
 
     audit("recovery initiated", Darrrr::RecoveryToken.parse(token).token_id.to_hex)
     notify("we've countersigned and sent a recovery token", account_provider)

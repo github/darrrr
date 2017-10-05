@@ -35,17 +35,17 @@ module Darrrr
 
     class << self
       # data: the value that will be encrypted by EncryptedData.
-      # recovery_provider: the provider for which we are building the token.
-      # binding_data: a value retrieved from the recovery provider for this
-      # token.
+      # audience: the provider for which we are building the token.
+      # type: Either 0 (recovery token) or 1 (countersigned recovery token)
+      # options: the value to set for the options byte
       #
       # returns a RecoveryToken.
-      def build(issuer:, audience:, type:, options: nil)
+      def build(issuer:, audience:, type:, options: 0x00)
         token = RecoveryTokenWriter.new.tap do |token|
           token.token_id = token_id
           token.issuer = issuer.origin
           token.issued_time = Time.now.utc.iso8601
-          token.options = options || 0
+          token.options = options
           token.audience = audience.origin
           token.version = Darrrr::PROTOCOL_VERSION
           token.token_type = type
