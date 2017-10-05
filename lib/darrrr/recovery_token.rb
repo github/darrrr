@@ -40,12 +40,12 @@ module Darrrr
       # token.
       #
       # returns a RecoveryToken.
-      def build(issuer:, audience:, type:, options: 0)
+      def build(issuer:, audience:, type:, options: nil)
         token = RecoveryTokenWriter.new.tap do |token|
           token.token_id = token_id
           token.issuer = issuer.origin
           token.issued_time = Time.now.utc.iso8601
-          token.options = options
+          token.options = options || 0
           token.audience = audience.origin
           token.version = Darrrr::PROTOCOL_VERSION
           token.token_type = type
