@@ -55,7 +55,7 @@ module Darrrr
     # context: arbitrary data passed on to underlying crypto operations
     #
     # returns a [RecoveryToken, b64 encoded sealed_token] tuple
-    def generate_recovery_token(data:, audience:, context: nil, options: nil)
+    def generate_recovery_token(data:, audience:, context: nil, options: 0)
       token = RecoveryToken.build(issuer: self, audience: audience, type: RECOVERY_TOKEN_TYPE, options: options)
       token.data = self.encryptor.encrypt(data, self, context)
 
