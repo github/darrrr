@@ -66,10 +66,13 @@ module Darrrr
     # data structure is identical to the structure it's wrapping in format.
     #
     # token: the to_binary_s or binary representation of the recovery token
+    # context: an arbitrary object that is passed to lower level crypto operations
+    # options: the value to set in the options byte field of the recovery
+    #   token (defaults to 0x00)
     #
     # returns a Base64 encoded representation of the countersigned token
     # and the signature over the token.
-    def countersign_token(token, context = nil)
+    def countersign_token(token:, context: nil, options: 0x00)
       begin
         account_provider = RecoveryToken.account_provider_issuer(token)
       rescue RecoveryTokenSerializationError, UnknownProviderError
@@ -79,7 +82,8 @@ module Darrrr
       counter_recovery_token = RecoveryToken.build(
         issuer: self,
         audience: account_provider,
-        type: COUNTERSIGNED_RECOVERY_TOKEN_TYPE
+        type: COUNTERSIGNED_RECOVERY_TOKEN_TYPE,
+        options: options,
       )
 
       counter_recovery_token.data = token

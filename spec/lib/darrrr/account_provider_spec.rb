@@ -82,7 +82,7 @@ module Darrrr
 
     it "validates countersigned tokens" do
       sealed_token = Base64.strict_decode64(account_provider.send(:seal, token))
-      countersigned_token = recovery_provider.countersign_token(sealed_token)
+      countersigned_token = recovery_provider.countersign_token(token: sealed_token)
       expect(account_provider.validate_countersigned_recovery_token!(countersigned_token)).to_not be_nil
     end
 

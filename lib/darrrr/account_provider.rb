@@ -53,10 +53,11 @@ module Darrrr
     # data: value to encrypt in the token
     # provider: the recovery provider/audience of the token
     # context: arbitrary data passed on to underlying crypto operations
+    # options: the value to set for the options byte
     #
     # returns a [RecoveryToken, b64 encoded sealed_token] tuple
-    def generate_recovery_token(data:, audience:, context: nil)
-      token = RecoveryToken.build(issuer: self, audience: audience, type: RECOVERY_TOKEN_TYPE)
+    def generate_recovery_token(data:, audience:, context: nil, options: 0x00)
+      token = RecoveryToken.build(issuer: self, audience: audience, type: RECOVERY_TOKEN_TYPE, options: options)
       token.data = self.encryptor.encrypt(data, self, context)
 
       [token, seal(token, context)]
