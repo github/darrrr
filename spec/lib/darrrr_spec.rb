@@ -2,7 +2,7 @@
 
 require_relative "../spec_helper"
 
-describe Darrrr, vcr: { :cassette_name => "delegated_account_recovery/recovery_provider" } do
+describe Darrrr, vcr: { :cassette_name => "delegated_account_recovery/recovery_provider", match_requests_on: [:method, :uri] } do
   context "#recovery_provider" do
     it "raises an error if you ask for an unregistered recovery provider" do
       expect {
@@ -12,6 +12,21 @@ describe Darrrr, vcr: { :cassette_name => "delegated_account_recovery/recovery_p
 
     it "returns a registered recovery provider" do
       expect(Darrrr.recovery_provider("https://example-provider.org")).to be_kind_of(Darrrr::RecoveryProvider)
+    end
+
+    it "allows you to configure the recovery provider during retrieval" do
+      recovery_provider = Darrrr.recovery_provider("https://example-provider.org") do |provider|
+        provider.faraday_config_callback = lambda do |faraday|
+          faraday.adapter(Faraday.default_adapter)
+          faraday.headers["Accept-Encoding"] = "foo"
+        end
+      end
+
+      expect(recovery_provider).to be_kind_of(Darrrr::RecoveryProvider)
+
+      # assert extra header
+      recovery_provider_faraday = recovery_provider.send(:faraday)
+      expect(recovery_provider_faraday.headers).to include("Accept-Encoding" => "foo")
     end
   end
 
