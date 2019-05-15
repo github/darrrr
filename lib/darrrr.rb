@@ -58,13 +58,13 @@ module Darrrr
   class << self
     # recovery provider data is only loaded (and cached) upon use.
     attr_accessor :recovery_providers, :account_providers, :cache, :allow_unsafe_urls,
-      :privacy_policy, :icon_152px, :authority
+      :privacy_policy, :icon_152px, :authority, :faraday_config_callback
 
     # Find and load remote recovery provider configuration data.
     #
     # provider_origin: the origin that contains the config data in a well-known
     # location.
-    def recovery_provider(provider_origin, &block)
+    def recovery_provider(provider_origin)
       unless self.recovery_providers
         raise "No recovery providers configured"
       end
@@ -72,11 +72,7 @@ module Darrrr
       if provider_origin == this_recovery_provider&.origin
         this_recovery_provider
       elsif self.recovery_providers.include?(provider_origin)
-        RecoveryProvider.new(provider_origin).tap { |provider|
-          if block_given?
-            yield provider
-          end
-        }.load
+        RecoveryProvider.new(provider_origin).load
       else
         raise UnknownProviderError, "Unknown recovery provider: #{provider_origin}"
       end
@@ -101,11 +97,7 @@ module Darrrr
       if provider_origin == this_account_provider&.origin
         this_account_provider
       elsif self.account_providers.include?(provider_origin)
-        AccountProvider.new(provider_origin).tap { |provider|
-          if block_given?
-            yield provider
-          end
-        }.load
+        AccountProvider.new(provider_origin).load
       else
         raise UnknownProviderError, "Unknown account provider: #{provider_origin}"
       end

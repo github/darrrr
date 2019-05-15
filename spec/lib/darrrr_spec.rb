@@ -15,13 +15,11 @@ describe Darrrr, vcr: { :cassette_name => "delegated_account_recovery/recovery_p
     end
 
     it "allows you to configure the recovery provider during retrieval" do
-      recovery_provider = Darrrr.recovery_provider("https://example-provider.org") do |provider|
-        provider.faraday_config_callback = lambda do |faraday|
-          faraday.adapter(Faraday.default_adapter)
-          faraday.headers["Accept-Encoding"] = "foo"
-        end
+      Darrrr.faraday_config_callback = lambda do |faraday|
+        faraday.adapter(Faraday.default_adapter)
+        faraday.headers["Accept-Encoding"] = "foo"
       end
-
+      recovery_provider = Darrrr.recovery_provider("https://example-provider.org")
       expect(recovery_provider).to be_kind_of(Darrrr::RecoveryProvider)
 
       # assert extra header

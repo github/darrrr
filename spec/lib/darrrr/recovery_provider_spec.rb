@@ -45,21 +45,22 @@ module Darrrr
     end
 
     it "provides extra options for faraday" do
-      recovery_provider.faraday_config_callback = lambda do |faraday|
-        faraday.headers["Accept-Encoding"] = :foo
-        faraday.adapter(:typhoeus)
+      Darrrr.faraday_config_callback = lambda do |faraday|
+        faraday.headers["Accept-Encoding"] = "foo"
+        faraday.adapter(Faraday.default_adapter)
       end
+      recovery_provider = example_recovery_provider
 
       # assert extra header
       recovery_provider_faraday = recovery_provider.send(:faraday)
-      expect(recovery_provider_faraday.headers).to include("Accept-Encoding" => :foo)
+      expect(recovery_provider_faraday.headers).to include("Accept-Encoding" => "foo")
 
       # assert handler is property set
       handler = JSON.parse(recovery_provider_faraday.to_json)["builder"]["handlers"]
       expect(handler).to_not be_nil
       handler_name = handler.first["name"]
       expect(handler_name).to_not be_nil
-      expect(handler_name).to eq("Faraday::Adapter::Typhoeus")
+      expect(handler_name).to eq("Faraday::Adapter::NetHttp")
     end
 
     it "does not accept in incomplete config" do

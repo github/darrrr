@@ -28,36 +28,22 @@ module Darrrr
     end
 
     it "provides extra options for faraday" do
-      account_provider.faraday_config_callback = lambda do |faraday|
-        faraday.headers["Accept-Encoding"] = :foo
-        faraday.adapter(:typhoeus)
+      Darrrr.faraday_config_callback = lambda do |faraday|
+        faraday.headers["Accept-Encoding"] = "foo"
+        faraday.adapter(Faraday.default_adapter)
       end
+      account_provider = example_account_provider
 
       # assert extra header
       account_provider_faraday = account_provider.send(:faraday)
-      expect(account_provider_faraday.headers).to include("Accept-Encoding" => :foo)
+      expect(account_provider_faraday.headers).to include("Accept-Encoding" => "foo")
 
       # assert handler is property set
       handler = JSON.parse(account_provider_faraday.to_json)["builder"]["handlers"]
       expect(handler).to_not be_nil
       handler_name = handler.first["name"]
       expect(handler_name).to_not be_nil
-      expect(handler_name).to eq("Faraday::Adapter::Typhoeus")
-    end
-
-    it "allows you to configure the recovery provider during retrieval" do
-      account_provider = Darrrr.account_provider("https://example-provider.org") do |provider|
-        provider.faraday_config_callback = lambda do |faraday|
-          faraday.adapter(Faraday.default_adapter)
-          faraday.headers["Accept-Encoding"] = "foo"
-        end
-      end
-
-      expect(account_provider).to be_kind_of(Darrrr::AccountProvider)
-
-      # assert extra header
-      account_provider_faraday = account_provider.send(:faraday)
-      expect(account_provider_faraday.headers).to include("Accept-Encoding" => "foo")
+      expect(handler_name).to eq("Faraday::Adapter::NetHttp")
     end
 
     it "tokens can be sealed and unsealed" do
