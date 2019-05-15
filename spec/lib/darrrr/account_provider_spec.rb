@@ -45,6 +45,23 @@ module Darrrr
       expect(handler_name).to eq("Faraday::Adapter::Typhoeus")
     end
 
+    it "allows you to configure the recovery provider during retrieval" do
+      account_provider = Darrrr.account_provider("https://example-provider.org") do |provider|
+        binding.pry
+        provider.faraday_config_callback = lambda do |faraday|
+          faraday.adapter(Faraday.default_adapter)
+          binding.pry
+          faraday.headers["Accept-Encoding"] = "foo"
+        end
+      end
+
+      expect(account_provider).to be_kind_of(Darrrr::AccountProvider)
+
+      # assert extra header
+      account_provider_faraday = account_provider.send(:faraday)
+      expect(account_provider_faraday.headers).to include("Accept-Encoding" => "foo")
+    end
+
     it "tokens can be sealed and unsealed" do
       payload = Base64.strict_decode64(account_provider.send(:seal, token))
       unsealed_token = account_provider.unseal(payload)

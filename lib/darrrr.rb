@@ -72,12 +72,11 @@ module Darrrr
       if provider_origin == this_recovery_provider&.origin
         this_recovery_provider
       elsif self.recovery_providers.include?(provider_origin)
-        provider = RecoveryProvider.new(provider_origin)
-        if block_given?
-          yield provider
-        end
-
-        provider.load
+        RecoveryProvider.new(provider_origin).tap { |provider|
+          if block_given?
+            yield provider
+          end
+        }.load
       else
         raise UnknownProviderError, "Unknown recovery provider: #{provider_origin}"
       end
@@ -95,14 +94,18 @@ module Darrrr
     #
     # provider_origin: the origin that contains the config data in a well-known
     # location.
-    def account_provider(provider_origin)
+    def account_provider(provider_origin, &block)
       unless self.account_providers
         raise "No account providers configured"
       end
       if provider_origin == this_account_provider&.origin
         this_account_provider
       elsif self.account_providers.include?(provider_origin)
-        AccountProvider.new(provider_origin).load
+        AccountProvider.new(provider_origin).tap { |provider|
+          if block_given?
+            yield provider
+          end
+        }.load
       else
         raise UnknownProviderError, "Unknown account provider: #{provider_origin}"
       end
