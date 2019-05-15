@@ -47,10 +47,8 @@ module Darrrr
 
     it "allows you to configure the recovery provider during retrieval" do
       account_provider = Darrrr.account_provider("https://example-provider.org") do |provider|
-        binding.pry
         provider.faraday_config_callback = lambda do |faraday|
           faraday.adapter(Faraday.default_adapter)
-          binding.pry
           faraday.headers["Accept-Encoding"] = "foo"
         end
       end
