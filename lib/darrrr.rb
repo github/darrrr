@@ -64,7 +64,7 @@ module Darrrr
     #
     # provider_origin: the origin that contains the config data in a well-known
     # location.
-    def recovery_provider(provider_origin)
+    def recovery_provider(provider_origin, &block)
       unless self.recovery_providers
         raise "No recovery providers configured"
       end
@@ -72,7 +72,12 @@ module Darrrr
       if provider_origin == this_recovery_provider&.origin
         this_recovery_provider
       elsif self.recovery_providers.include?(provider_origin)
-        RecoveryProvider.new(provider_origin).load
+        provider = RecoveryProvider.new(provider_origin)
+        if block_given?
+          yield provider
+        end
+
+        provider.load
       else
         raise UnknownProviderError, "Unknown recovery provider: #{provider_origin}"
       end
