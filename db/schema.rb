@@ -10,24 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2017_03_15_000657) do
+ActiveRecord::Schema.define(version: 20170315000657) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "recovery_tokens", force: :cascade do |t|
-    t.string "name"
-    t.text "token_blob"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "token_id"
-    t.string "provider"
+    t.string   "name"
+    t.text     "token_blob"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "token_id"
+    t.string   "provider"
   end
 
   create_table "reference_tokens", force: :cascade do |t|
-    t.string "provider"
-    t.string "token_id"
+    t.string   "provider"
+    t.string   "token_id"
     t.datetime "confirmed_at"
     t.datetime "recovered_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end

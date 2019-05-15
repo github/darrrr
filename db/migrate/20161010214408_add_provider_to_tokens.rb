@@ -1,4 +1,4 @@
-class AddProviderToTokens < ActiveRecord::Migration[5.2]
+class AddProviderToTokens < ActiveRecord::Migration
   def change
     add_column :tokens, :provider, :string
   end

@@ -1,4 +1,4 @@
-class AddTokenIdToToken < ActiveRecord::Migration[5.2]
+class AddTokenIdToToken < ActiveRecord::Migration
   def change
     add_column :tokens, :token_id, :string
   end

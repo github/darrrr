@@ -1,4 +1,4 @@
-class SeparateTokens < ActiveRecord::Migration[5.2]
+class SeparateTokens < ActiveRecord::Migration
   def change
     rename_table :tokens, :recovery_tokens
     create_table :reference_tokens do |t|
