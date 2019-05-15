@@ -9,6 +9,7 @@ module Darrrr
 
     def self.included(base)
       base.instance_eval do
+        attr_accessor :faraday_config_callback
         # this represents the account/recovery provider on this web app
         class << self
           attr_accessor :this
@@ -76,7 +77,11 @@ module Darrrr
 
     private def faraday
       Faraday.new do |f|
-        f.adapter(Faraday.default_adapter)
+        if @faraday_config_callback
+          @faraday_config_callback.call(f)
+        else
+          f.adapter(Faraday.default_adapter)
+        end
       end
     end
 
