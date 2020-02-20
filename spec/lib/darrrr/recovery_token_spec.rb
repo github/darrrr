@@ -36,5 +36,19 @@ module Darrrr
     it "extra data at the end of a token (e.g. a signature) does not cause errors" do
       RecoveryToken.parse(token.to_binary_s + "lululu") # assert_doesnt_raise_error
     end
+
+    it "returns binary encoded data despite Encoding.default_internal" do
+      w, $_w = $_w, false
+      before_enc = Encoding.default_internal
+
+      begin
+        Encoding.default_internal = Encoding::UTF_8
+        obj = token.to_binary_s
+        obj.to_binary_s.encoding.must_equal Encoding::ASCII_8BIT
+      ensure
+        Encoding.default_internal = before_enc
+        $_w = w
+      end
+    end
   end
 end
