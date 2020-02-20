@@ -1,0 +1,29 @@
+
+name: Build + Test
+on: [push]
+
+jobs:
+  build:
+    name: Build + Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby: [ '2.4', '2.5', '2.6' ]
+
+    steps:
+    - uses: actions/checkout@master
+    - name: Setup System
+      run: |
+        sudo apt-get install libsqlite3-dev
+    - name: Set up Ruby ${{ matrix.ruby }}
+      uses: actions/setup-ruby@v1
+      with:
+        version: ${{ matrix.ruby }}
+    - name: Build and test with Rake
+      run: |
+        gem install bundler
+        bundle install --jobs 4 --retry 3 --without production
+        bundle exec rake db:create
+        bundle exec rake db:schema:load
+        bundle exec rake db:migrate
+        bundle exec rspec spec
