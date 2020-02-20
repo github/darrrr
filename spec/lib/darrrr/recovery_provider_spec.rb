@@ -56,9 +56,9 @@ module Darrrr
       expect(recovery_provider_faraday.headers).to include("Accept-Encoding" => "foo")
 
       # assert handler is property set
-      handler = JSON.parse(recovery_provider_faraday.to_json)["builder"]["handlers"]
+      handler = JSON.parse(recovery_provider_faraday.to_json)["builder"]["adapter"]
       expect(handler).to_not be_nil
-      handler_name = handler.first["name"]
+      handler_name = handler["name"]
       expect(handler_name).to_not be_nil
       expect(handler_name).to eq("Faraday::Adapter::NetHttp")
     end
