@@ -24,6 +24,7 @@ jobs:
         gem install bundler
         bundle install --jobs 4 --retry 3 --without production
         bundle exec rake db:create
+        bundle exec rake db:schema:load
         bundle exec rake db:migrate
         bundle exec rspec spec
-        bundle exec rubocop 
+        bundle exec rubocop
