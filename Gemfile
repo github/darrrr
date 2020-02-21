@@ -1,36 +1,38 @@
-source 'https://rubygems.org'
+# frozen_string_literal: true
+
+source "https://rubygems.org"
 
 gemspec
 
 gem "activerecord"
+gem "dalli"
 gem "rack_csrf"
-gem "sinatra-activerecord"
 gem "rake"
 gem "sinatra"
+gem "sinatra-activerecord"
 gem "sinatra-contrib"
-gem "dalli"
 
 group :development do
+  gem "jdbc-sqlite3", platform: :jruby
   gem "pry-nav"
-  gem "jdbc-sqlite3", :platform => :jruby
-  gem "sqlite3", :platform => [:ruby, :mswin, :mingw]
+  gem "sqlite3", platform: [:ruby, :mswin, :mingw]
 end
 
 group :test do
+  gem "database_cleaner"
+  gem "guard-rspec"
+  gem "mechanize"
+  gem "poltergeist"
+  gem "rspec"
   gem "rubocop", "< 0.68"
   gem "rubocop-github"
   gem "rubocop-performance"
-  gem "mechanize"
-  gem "watir"
-  gem "vcr"
-  gem "webmock"
-  gem "rspec"
-  gem "guard-rspec"
   gem "ruby_gntp"
-  gem "poltergeist"
   gem "simplecov"
   gem "simplecov-json"
-  gem "database_cleaner"
+  gem "vcr"
+  gem "watir"
+  gem "webmock"
 end
 
 group :production do

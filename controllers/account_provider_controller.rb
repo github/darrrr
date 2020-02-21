@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AccountProviderController < MainController
   # 1 select recovery provider
   get "/" do

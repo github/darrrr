@@ -28,7 +28,7 @@ end
 Darrrr.register_account_provider(Darrrr.authority)
 Darrrr.register_recovery_provider(Darrrr.authority)
 
-options = { :namespace => "app_v1", :compress => true }
+options = { namespace: "app_v1", compress: true }
 
 # Uncomment to use memcached
 # Darrrr.cache = Dalli::Client.new('localhost:11211', options)
