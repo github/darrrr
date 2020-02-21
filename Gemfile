@@ -17,6 +17,9 @@ group :development do
 end
 
 group :test do
+  gem "rubocop", "< 0.68"
+  gem "rubocop-github"
+  gem "rubocop-performance"
   gem "mechanize"
   gem "watir"
   gem "vcr"
