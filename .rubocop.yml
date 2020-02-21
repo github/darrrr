@@ -4,3 +4,5 @@ inherit_gem:
 require: rubocop-performance
 GitHub/RailsApplicationRecord:
   Enabled: false
+Style/FrozenStringLiteralComment:
+  Enabled: false
