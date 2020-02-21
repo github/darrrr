@@ -43,8 +43,7 @@ module Darrrr
 
       begin
         Encoding.default_internal = Encoding::UTF_8
-        obj = token.to_binary_s
-        obj.to_binary_s.encoding.must_equal Encoding::ASCII_8BIT
+        AccountProvider.this.generate_recovery_token(data: "hai", audience: recovery_provider).first
       ensure
         Encoding.default_internal = before_enc
         $_w = w
