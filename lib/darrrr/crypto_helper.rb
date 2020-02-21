@@ -11,7 +11,7 @@ module Darrrr
     # of the token.
     def seal(token, context = nil)
       raise RuntimeError, "signing private key must be set" unless self.instance_variable_get(:@signing_private_key)
-      binary_token = token.to_binary_s
+      binary_token = token.to_binary_s.b # temporary 2.7 fix
       signature = self.encryptor.sign(binary_token, self.instance_variable_get(:@signing_private_key), self, context)
       Base64.strict_encode64([binary_token, signature].join)
     end

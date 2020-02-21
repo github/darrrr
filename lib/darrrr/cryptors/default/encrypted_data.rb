@@ -29,9 +29,9 @@ module Darrrr
     def decrypt
       cipher = self.class.cipher(:decrypt)
       cipher.iv = self.iv.to_binary_s
-      cipher.auth_tag = self.auth_tag.to_binary_s
+      cipher.auth_tag = self.auth_tag.to_binary_s.b
       cipher.auth_data = ""
-      cipher.update(self.ciphertext.to_binary_s) + cipher.final
+      cipher.update(self.ciphertext.to_binary_s.b) + cipher.final
     rescue OpenSSL::Cipher::CipherError => e
       raise CryptoError, "Unable to decrypt data: #{e}"
     end

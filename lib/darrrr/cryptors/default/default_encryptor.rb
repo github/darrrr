@@ -10,7 +10,7 @@ module Darrrr
       #
       # returns a byte array representation of the data
       def encrypt(data, _provider, _context = nil)
-        EncryptedData.build(data).to_binary_s
+        EncryptedData.build(data).to_binary_s.b
       end
 
       # Decrypts the data
