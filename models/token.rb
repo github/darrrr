@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-class RecoveryToken < ActiveRecord::ApplicationRecord
+class RecoveryToken < ActiveRecord::Base
 end
 
-class ReferenceToken < ActiveRecord::ApplicationRecord
+class ReferenceToken < ActiveRecord::Base
 end

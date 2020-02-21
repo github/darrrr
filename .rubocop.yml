@@ -2,3 +2,5 @@ inherit_gem:
   rubocop-github:
     - config/default.yml
 require: rubocop-performance
+GitHub/RailsApplicationRecord:
+  Enabled: false
