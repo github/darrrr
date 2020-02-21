@@ -18,7 +18,7 @@ jobs:
     - name: Set up Ruby ${{ matrix.ruby }}
       uses: actions/setup-ruby@v1
       with:
-        version: ${{ matrix.ruby }}
+        ruby-version: ${{ matrix.ruby }}
     - name: Build and test with Rake
       run: |
         gem install bundler
@@ -27,3 +27,4 @@ jobs:
         bundle exec rake db:schema:load
         bundle exec rake db:migrate
         bundle exec rspec spec
+        bundle exec rubocop

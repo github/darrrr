@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "bundler/setup"
 require "pry"
 require "vcr"
@@ -9,7 +11,7 @@ require "capybara/dsl"
 require "capybara/poltergeist"
 require "sinatra"
 require "securerandom"
-require 'database_cleaner'
+require "database_cleaner"
 
 ENV["ACCOUNT_PROVIDER_PUBLIC_KEY"] = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEks3CjRTWrTnEDEiz36ICsy3mOX7fhauJ3Jj3R6hN7rp0Q6zh3WKIhGMBR8Ccc1VKZ4eMqLmw/WQLHSAn22GD4g=="
 ENV["ACCOUNT_PROVIDER_PRIVATE_KEY"] = "MHcCAQEEIKrHDRd0Bn3PkY9fU4AaDErNIKPkMCdL9tGNvwyWXdPqoAoGCCqGSM49AwEHoUQDQgAEks3CjRTWrTnEDEiz36ICsy3mOX7fhauJ3Jj3R6hN7rp0Q6zh3WKIhGMBR8Ccc1VKZ4eMqLmw/WQLHSAn22GD4g=="
@@ -19,8 +21,8 @@ ENV["RECOVERY_PROVIDER_PUBLIC_KEY"] = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEcUoYO
 ENV["COOKIE_SECRET"] = SecureRandom.hex
 ENV["RACK_ENV"] = "test"
 
-require 'simplecov'
-require 'simplecov-json'
+require "simplecov"
+require "simplecov-json"
 SimpleCov.formatters = [
   SimpleCov::Formatter::JSONFormatter,
   SimpleCov::Formatter::HTMLFormatter,
