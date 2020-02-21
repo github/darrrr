@@ -3,7 +3,7 @@
 require_relative "../../spec_helper"
 
 module Darrrr
-  describe RecoveryToken, vcr: { :cassette_name => "delegated_account_recovery/recovery_provider" } do
+  describe RecoveryToken, vcr: { cassette_name: "delegated_account_recovery/recovery_provider" } do
     let(:binding) { SecureRandom.hex }
     let(:recovery_provider) { example_account_provider }
     let(:token) { AccountProvider.this.generate_recovery_token(data: "hai", audience: recovery_provider).first }

@@ -3,7 +3,7 @@
 require_relative "../../spec_helper"
 
 module Darrrr
-  describe AccountProvider, vcr: { :cassette_name => "delegated_account_recovery/recovery_provider" } do
+  describe AccountProvider, vcr: { cassette_name: "delegated_account_recovery/recovery_provider" } do
     let(:recovery_provider) { example_recovery_provider }
     let(:account_provider) { AccountProvider.this }
     let(:token) { account_provider.generate_recovery_token(data: "hai", audience: recovery_provider).first }
