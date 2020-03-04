@@ -20,7 +20,11 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
 
   gem.add_dependency("rake")
-  gem.add_dependency("bindata")
+  if RUBY_VERSION > "2.6"
+    gem.add_dependency("bindata", ">= 2.4.6") # See https://github.com/dmendel/bindata/pull/120
+  else
+    gem.add_dependency("bindata")
+  end
   gem.add_dependency("faraday")
   gem.add_dependency("addressable")
 
