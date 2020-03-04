@@ -19,7 +19,6 @@ require_relative "darrrr/cryptors/default/encrypted_data"
 require_relative "darrrr/cryptors/default/encrypted_data_io"
 
 module Darrrr
-  VERSION = "0.1.6"
   class DelegatedRecoveryError < StandardError; end
   # Represents a binary serialization error
   class RecoveryTokenSerializationError < DelegatedRecoveryError; end
