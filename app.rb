@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "sinatra"
 require "sinatra/multi_route"
 require "rack/csrf"
@@ -28,7 +30,7 @@ class MainController < Sinatra::Base
 
   before do
     unless request.ssl?
-      halt 401, "Not authorized\n" if ENV['RACK_ENV'] == :production
+      halt 401, "Not authorized\n" if ENV["RACK_ENV"] == :production
     end
   end
 

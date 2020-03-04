@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateTokens < ActiveRecord::Migration[5.2]
   def change
     create_table :tokens do |t|
@@ -5,6 +7,6 @@ class CreateTokens < ActiveRecord::Migration[5.2]
        t.text :token_blob
 
        t.timestamps
-     end
+    end
   end
 end

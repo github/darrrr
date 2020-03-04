@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "../../spec_helper"
 
 describe "AccountProviderController", vcr: { cassette_name: "delegated_account_recovery/integration_test" } do

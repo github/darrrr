@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 $stdout.sync = true
 require_relative "app"
 require_relative "controllers/account_provider_controller"
@@ -5,9 +7,9 @@ require_relative "controllers/recovery_provider_controller"
 require_relative "controllers/well_known_config_controller"
 
 configure do
-  use Rack::Session::Cookie, :secret => ENV["COOKIE_SECRET"]
+  use Rack::Session::Cookie, secret: ENV["COOKIE_SECRET"]
   unless Sinatra::Application.environment == :test
-    use Rack::Csrf, :raise => true, :skip => MainController::UNAUTHED_ENDPOINTS
+    use Rack::Csrf, raise: true, skip: MainController::UNAUTHED_ENDPOINTS
   end
 end
 

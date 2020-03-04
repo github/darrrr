@@ -2,7 +2,7 @@
 
 require_relative "../spec_helper"
 
-describe Darrrr, vcr: { :cassette_name => "delegated_account_recovery/recovery_provider", match_requests_on: [:method, :uri] } do
+describe Darrrr, vcr: { cassette_name: "delegated_account_recovery/recovery_provider", match_requests_on: [:method, :uri] } do
   context "#recovery_provider" do
     it "raises an error if you ask for an unregistered recovery provider" do
       expect {

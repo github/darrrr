@@ -3,7 +3,7 @@
 require_relative "../../spec_helper"
 
 module Darrrr
-  describe RecoveryProvider, vcr: { :cassette_name => "delegated_account_recovery/recovery_provider" } do
+  describe RecoveryProvider, vcr: { cassette_name: "delegated_account_recovery/recovery_provider" } do
     include DelegatedRecoveryHelpers
 
     let(:recovery_provider) { example_recovery_provider }

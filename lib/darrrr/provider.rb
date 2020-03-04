@@ -33,7 +33,7 @@ module Darrrr
     # Returns the crypto API to be used. A thread local instance overrides the
     # globally configured value which overrides the default encryptor.
     def encryptor
-      Thread.current[encryptor_key()] || @encryptor || DefaultEncryptor
+      Thread.current[encryptor_key] || @encryptor || DefaultEncryptor
     end
 
     # Overrides the global `encryptor` API to use
@@ -53,14 +53,14 @@ module Darrrr
         raise ArgumentError, "custom encryption class must respond to all of #{REQUIRED_CRYPTO_OPS}"
       end
 
-      Thread.current[encryptor_key()] = encryptor
+      Thread.current[encryptor_key] = encryptor
       yield
     ensure
-      Thread.current[encryptor_key()] = nil
+      Thread.current[encryptor_key] = nil
     end
 
     private def valid_encryptor?(encryptor)
-      REQUIRED_CRYPTO_OPS.all? {|m| encryptor.respond_to?(m)}
+      REQUIRED_CRYPTO_OPS.all? { |m| encryptor.respond_to?(m) }
     end
 
     # Lazily loads attributes if attrs is nil. It makes an http call to the

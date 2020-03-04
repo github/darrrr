@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "../models/token"
 
 class RecoveryProviderController < MainController
@@ -21,7 +23,7 @@ class RecoveryProviderController < MainController
       response[:status] = "save-failure"
     end
 
-    redirect to("#{account_provider.save_token_return}?#{response.map{|key, value| "#{key}=#{value}"}.join("&")}")
+    redirect to("#{account_provider.save_token_return}?#{response.map { |key, value| "#{key}=#{value}" }.join("&")}")
   end
 
   route :get, :post, "/recover-account" do

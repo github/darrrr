@@ -1,7 +1,7 @@
 ---
 engines:
   bundler-audit:
-    enabled: true
+    enabled: false
   csslint:
     enabled: false
   duplication:
@@ -15,6 +15,8 @@ engines:
     enabled: true
   rubocop:
     enabled: true
+    config:
+      file: .rubocop.yml
 ratings:
   paths:
   - Gemfile.lock
