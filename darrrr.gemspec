@@ -1,9 +1,11 @@
 # coding: utf-8
 # frozen_string_literal: true
 
+require_relative "lib/darrrr/version"
+
 Gem::Specification.new do |gem|
   gem.name    = "darrrr"
-  gem.version = "0.1.5"
+  gem.version = Darrrr::VERSION
   gem.licenses = ["MIT"]
 
   gem.summary = "Client library for the Delegated Recovery spec"
@@ -12,12 +14,8 @@ Gem::Specification.new do |gem|
   gem.authors  = ["Neil Matatall"]
   gem.email    = "opensource+darrrr@github.com"
   gem.homepage = "http://github.com/github/darrrr"
-
-  gem.files         = `git ls-files -z`.split("\x0").reject do |f|
-    f.match(%r{^(test|spec|features)/})
-  end
-  gem.bindir        = "exe"
   gem.require_paths = ["lib"]
+  gem.files = Dir["Rakefile", "{lib}/**/*", "README*", "LICENSE*"] & `git ls-files -z`.split("\0")
 
   gem.add_dependency("rake")
   if RUBY_VERSION > "2.6"
@@ -27,6 +25,4 @@ Gem::Specification.new do |gem|
   end
   gem.add_dependency("faraday")
   gem.add_dependency("addressable")
-
-  gem.files = Dir["Rakefile", "{lib}/**/*", "README*", "LICENSE*"] & `git ls-files -z`.split("\0")
 end
